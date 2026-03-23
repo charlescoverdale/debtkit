@@ -55,10 +55,10 @@ differential by deflating both the interest rate and GDP growth:
 # Simple scalar case
 dk_rg(interest_rate = 0.04, gdp_growth = 0.03)
 
-# With debt — compute stabilising primary balance
+# With debt: compute stabilising primary balance
 dk_rg(interest_rate = 0.04, gdp_growth = 0.03, debt = 0.90)
 
-# With inflation — compute real r-g
+# With inflation: compute real r-g
 dk_rg(interest_rate = 0.04, gdp_growth = 0.05, inflation = 0.02)
 
 # Vector case using sample data
