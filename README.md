@@ -290,4 +290,6 @@ Found a bug or have a feature request? Please [open an issue](https://github.com
 
 ---
 
+## Keywords
+
 r, r-package, debt-sustainability, fiscal-policy, public-debt, macroeconomics, imf, sovereign-risk, fan-chart, stress-test
