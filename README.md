@@ -164,19 +164,80 @@ dk_sustainability_gap(
 
 ---
 
-## Where do I get fiscal data?
+## What data do I need?
 
-`debtkit` is pure computation. You supply numeric vectors. Common sources of fiscal data:
+Every function in `debtkit` takes the same four inputs, all as decimals (0.90 = 90% of GDP):
 
-| Source | Coverage | How to get into R |
-|--------|----------|-------------------|
-| IMF WEO | 190+ countries | Download CSV from imf.org |
-| OECD | 38 members | [readoecd](https://cran.r-project.org/package=readoecd) |
-| FRED (US) | United States | [fred](https://cran.r-project.org/package=fred) |
-| Eurostat | EU members | eurostat package |
-| World Bank | 200+ countries | WDI package |
+| Input | What it is | Example |
+|-------|-----------|---------|
+| `debt` | Government debt as a share of GDP | `0.90` (90% of GDP) |
+| `interest_rate` | Effective interest rate the government pays on its debt | `0.04` (4%) |
+| `gdp_growth` | Nominal GDP growth rate | `0.03` (3%) |
+| `primary_balance` | Government revenue minus spending, excluding interest payments. Positive = surplus, negative = deficit | `0.01` (1% surplus) |
 
-Or use the built-in sample data: `dk_sample_data()`.
+These are standard fiscal variables published by every major data provider. You can type them in directly, use the built-in sample data, or pull them from a data source.
+
+### Option 1: Type values in directly
+
+If you know the numbers (from a budget document, a news article, or a textbook exercise), just type them:
+
+```r
+library(debtkit)
+
+# Italy-like scenario: high debt, low growth, small deficit
+dk_project(debt = 1.40, interest_rate = 0.035, gdp_growth = 0.02,
+           primary_balance = 0.015, horizon = 10)
+```
+
+### Option 2: Use the built-in sample data
+
+The package includes sample datasets so you can try everything immediately:
+
+```r
+d <- dk_sample_data()
+str(d)
+#> List of 5
+#>  $ years          : int [1:20] 2004 2005 2006 ... 2023
+#>  $ debt           : num [1:20] 0.45 0.44 0.42 ... 0.69
+#>  $ interest_rate  : num [1:20] 0.045 0.043 0.042 ... 0.038
+#>  $ gdp_growth     : num [1:20] 0.055 0.050 0.060 ... 0.040
+#>  $ primary_balance: num [1:20] 0.010 0.012 0.015 ... -0.005
+```
+
+### Option 3: Pull data from a source
+
+Here is a complete example using OECD data for any of 38 member countries:
+
+```r
+# 1. Install the data package (one time)
+install.packages("readoecd")
+
+# 2. Download fiscal data for France
+library(readoecd)
+debt <- oecd_series("GGDEBT", "FRA")          # General government debt (% of GDP)
+growth <- oecd_series("NGDP_RPCH", "FRA")      # Real GDP growth (%)
+balance <- oecd_series("GGXONLB_NGDP", "FRA")  # Primary balance (% of GDP)
+
+# 3. Convert from percent to decimal and feed into debtkit
+library(debtkit)
+dk_project(
+  debt = tail(debt$value, 1) / 100,
+  interest_rate = 0.03,                         # Use latest effective rate estimate
+  gdp_growth = tail(growth$value, 1) / 100,
+  primary_balance = tail(balance$value, 1) / 100,
+  horizon = 10
+)
+```
+
+### Where to find fiscal data
+
+| Source | Coverage | Series you need | How to get into R |
+|--------|----------|----------------|-------------------|
+| OECD | 38 countries | GGDEBT, NGDP_RPCH, GGXONLB_NGDP | [readoecd](https://cran.r-project.org/package=readoecd) |
+| IMF WEO | 190+ countries | GGXWDG_NGDP, NGDP_RPCH, GGXONLB_NGDP | Download CSV from imf.org |
+| FRED (US) | United States | GFDEGDQ188S, GDPC1, FYFSGDA188S | [fred](https://cran.r-project.org/package=fred) |
+| Eurostat | EU members | gov_10dd_edpt1, nama_10_gdp | eurostat package |
+| World Bank | 200+ countries | GC.DOD.TOTL.GD.ZS, NY.GDP.MKTP.KD.ZG | WDI package |
 
 ---
 
