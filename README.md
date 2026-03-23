@@ -28,7 +28,6 @@ proj
 #> * Debt-stabilising primary balance: 0.8%
 ```
 
----
 
 ## Why debt sustainability analysis?
 
@@ -38,7 +37,6 @@ The core idea is simple. Next year's debt-to-GDP ratio depends on four things: t
 
 In practice, a full DSA combines several analyses: deterministic projections under baseline assumptions, historical decompositions of what drove debt changes in the past, stress tests under adverse scenarios, stochastic simulations that generate thousands of possible paths, tests of whether the government historically responds to rising debt by tightening policy, and calculations of how much fiscal adjustment is needed to hit a target. All of these are well-established methods, but tedious to code from scratch. `debtkit` packages them into clean R functions with plotting methods, so you can go from raw fiscal data to a complete assessment in a few lines of code.
 
----
 
 ## Examples
 
@@ -162,7 +160,6 @@ dk_sustainability_gap(
 #> * Required PB adjustment: 1.9 pp
 ```
 
----
 
 ## What data do I need?
 
@@ -239,7 +236,6 @@ dk_project(
 | Eurostat | EU members | gov_10dd_edpt1, nama_10_gdp | eurostat package |
 | World Bank | 200+ countries | GC.DOD.TOTL.GD.ZS, NY.GDP.MKTP.KD.ZG | WDI package |
 
----
 
 ## Functions
 
@@ -260,7 +256,6 @@ dk_project(
 
 All objects returned by `dk_project()`, `dk_decompose()`, `dk_fan_chart()`, `dk_stress_test()`, `dk_bohn_test()`, and `dk_compare()` have `print()`, `summary()`, and `plot()` methods.
 
----
 
 ## Academic references
 
@@ -271,7 +266,6 @@ All objects returned by `dk_project()`, `dk_decompose()`, `dk_fan_chart()`, `dk_
 - IMF (2022). *Staff Guidance Note on the Sovereign Risk and Debt Sustainability Framework for Market Access Countries*. IMF Policy Paper.
 - European Commission (2024). *Fiscal Sustainability Report*. Institutional Paper 291.
 
----
 
 ## Related packages
 
@@ -282,13 +276,11 @@ All objects returned by `dk_project()`, `dk_decompose()`, `dk_fan_chart()`, `dk_
 | [fred](https://github.com/charlescoverdale/fred) | Federal Reserve Economic Data |
 | [readoecd](https://github.com/charlescoverdale/readoecd) | OECD data access |
 
----
 
 ## Issues
 
 Found a bug or have a feature request? Please [open an issue](https://github.com/charlescoverdale/debtkit/issues) on GitHub.
 
----
 
 ## Keywords
 
