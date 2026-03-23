@@ -275,12 +275,12 @@ All objects returned by `dk_project()`, `dk_decompose()`, `dk_fan_chart()`, `dk_
 
 ## Related packages
 
-| Package | Description | CRAN |
-|---------|-------------|------|
-| [yieldcurves](https://github.com/charlescoverdale/yieldcurves) | Yield curve fitting and analysis | Coming soon |
-| [inflationkit](https://github.com/charlescoverdale/inflationkit) | Inflation analysis and core measures | Coming soon |
-| [fred](https://github.com/charlescoverdale/fred) | Federal Reserve Economic Data | [![CRAN](https://www.r-pkg.org/badges/version/fred)](https://cran.r-project.org/package=fred) |
-| [readoecd](https://github.com/charlescoverdale/readoecd) | OECD data access | [![CRAN](https://www.r-pkg.org/badges/version/readoecd)](https://cran.r-project.org/package=readoecd) |
+| Package | Description |
+|---------|-------------|
+| [yieldcurves](https://github.com/charlescoverdale/yieldcurves) | Yield curve fitting and analysis |
+| [inflationkit](https://github.com/charlescoverdale/inflationkit) | Inflation analysis and core measures |
+| [fred](https://github.com/charlescoverdale/fred) | Federal Reserve Economic Data |
+| [readoecd](https://github.com/charlescoverdale/readoecd) | OECD data access |
 
 ---
 
