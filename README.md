@@ -168,12 +168,12 @@ dk_sustainability_gap(
 
 Every function in `debtkit` takes the same four inputs, all as decimals (0.90 = 90% of GDP):
 
-| Input | What it is | Example |
-|-------|-----------|---------|
-| `debt` | Government debt as a share of GDP | `0.90` (90% of GDP) |
-| `interest_rate` | Effective interest rate the government pays on its debt | `0.04` (4%) |
-| `gdp_growth` | Nominal GDP growth rate | `0.03` (3%) |
-| `primary_balance` | Government revenue minus spending, excluding interest payments. Positive = surplus, negative = deficit | `0.01` (1% surplus) |
+| Input | What it is |
+|-------|-----------|
+| `debt` | Debt-to-GDP ratio (0.90 = 90%) |
+| `interest_rate` | Interest rate on government debt (0.04 = 4%) |
+| `gdp_growth` | Nominal GDP growth (0.03 = 3%) |
+| `primary_balance` | Revenue minus non-interest spending (0.01 = 1% surplus, negative = deficit) |
 
 These are standard fiscal variables published by every major data provider. You can type them in directly, use the built-in sample data, or pull them from a data source.
 
