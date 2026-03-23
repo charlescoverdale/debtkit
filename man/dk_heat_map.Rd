@@ -60,4 +60,8 @@ hm
 \references{
 International Monetary Fund (2013). \emph{Staff Guidance Note for Public Debt
 Sustainability Analysis in Market-Access Countries}. IMF Policy Paper.
+
+International Monetary Fund (2022). \emph{Staff Guidance Note on the Sovereign
+Risk and Debt Sustainability Framework for Market Access Countries}.
+IMF Policy Paper.
 }

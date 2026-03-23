@@ -42,6 +42,19 @@
 #'   balance in the first two years. Default `-0.01`.
 #' @param contingent_shock Numeric scalar. One-off increase in debt-to-GDP from
 #'   contingent liabilities materialising. Default `0.10`.
+#' @param calibrate Optional named list for data-driven shock calibration.
+#'   Should contain numeric vectors `gdp_growth_hist`, `interest_rate_hist`,
+#'   and `primary_balance_hist`. When provided, shock sizes are computed as
+#'   one standard deviation of each historical series, replacing the fixed
+#'   defaults. When `NULL` (default), the fixed defaults are used.
+#'
+#' @references
+#' International Monetary Fund (2013). *Staff Guidance Note for Public Debt
+#' Sustainability Analysis in Market-Access Countries*. IMF Policy Paper.
+#'
+#' International Monetary Fund (2022). *Staff Guidance Note on the Sovereign
+#' Risk and Debt Sustainability Framework for Market Access Countries*.
+#' IMF Policy Paper.
 #'
 #' @return An S3 object of class `dk_stress` containing:
 #' \describe{
@@ -74,7 +87,8 @@ dk_stress_test <- function(debt,
                            exchange_shock = 0.15,
                            fx_share = 0,
                            pb_shock = -0.01,
-                           contingent_shock = 0.10) {
+                           contingent_shock = 0.10,
+                           calibrate = NULL) {
 
   # -- Validate inputs --------------------------------------------------------
 
@@ -89,6 +103,28 @@ dk_stress_test <- function(debt,
   validate_scalar(fx_share, "fx_share")
   validate_scalar(pb_shock, "pb_shock")
   validate_scalar(contingent_shock, "contingent_shock")
+
+  # -- Data-driven calibration ------------------------------------------------
+  if (!is.null(calibrate)) {
+    if (!is.list(calibrate)) {
+      cli_abort("{.arg calibrate} must be a named list or {.val NULL}.")
+    }
+    required <- c("gdp_growth_hist", "interest_rate_hist", "primary_balance_hist")
+    missing_fields <- setdiff(required, names(calibrate))
+    if (length(missing_fields) > 0) {
+      cli_abort("{.arg calibrate} must contain: {.val {missing_fields}}.")
+    }
+    validate_numeric_vector(calibrate$gdp_growth_hist, "calibrate$gdp_growth_hist",
+                            min_length = 3)
+    validate_numeric_vector(calibrate$interest_rate_hist, "calibrate$interest_rate_hist",
+                            min_length = 3)
+    validate_numeric_vector(calibrate$primary_balance_hist, "calibrate$primary_balance_hist",
+                            min_length = 3)
+
+    growth_shock    <- -1 * stats::sd(calibrate$gdp_growth_hist)
+    interest_shock  <- 1 * stats::sd(calibrate$interest_rate_hist)
+    pb_shock        <- -1 * stats::sd(calibrate$primary_balance_hist)
+  }
 
   # -- Recycle to horizon length ----------------------------------------------
   r  <- recycle_input(interest_rate, horizon, "interest_rate")

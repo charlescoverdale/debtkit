@@ -8,8 +8,9 @@ dk_bohn_test(
   primary_balance,
   debt,
   controls = NULL,
-  method = c("ols", "rolling"),
-  window = NULL
+  method = c("ols", "rolling", "quadratic"),
+  window = NULL,
+  robust_se = FALSE
 )
 }
 \arguments{
@@ -23,10 +24,17 @@ rows as \code{primary_balance}). Each column enters the regression as a
 separate regressor.}
 
 \item{method}{Character; \code{"ols"} (default) for a single OLS regression over
-the full sample, or \code{"rolling"} for rolling-window regressions.}
+the full sample, \code{"rolling"} for rolling-window regressions, or
+\code{"quadratic"} for a non-linear specification that includes a squared debt
+term to detect fiscal fatigue (Ghosh et al. 2013).}
 
 \item{window}{Integer; rolling window size. Required when
 \code{method = "rolling"}, ignored otherwise.}
+
+\item{robust_se}{Logical; if \code{TRUE}, compute Newey-West HAC standard errors
+using a Bartlett kernel with automatic bandwidth
+\code{floor(4*(n/100)^(2/9))}. This corrects for serial correlation in
+fiscal data. Default \code{FALSE}.}
 }
 \value{
 An S3 object of class \code{dk_bohn} with components:
@@ -36,11 +44,17 @@ rolling window).}
 \item{rho_se}{Standard error of \code{rho}.}
 \item{rho_pvalue}{p-value for the test H0: rho = 0.}
 \item{sustainable}{Logical; \code{TRUE} if \code{rho > 0} and \code{rho_pvalue < 0.05}.}
-\item{model}{The \code{lm} object from the full-sample (OLS) or last-window
-(rolling) regression.}
-\item{method}{The method used (\code{"ols"} or \code{"rolling"}).}
+\item{model}{The \code{lm} object from the full-sample (OLS/quadratic) or
+last-window (rolling) regression.}
+\item{method}{The method used (\code{"ols"}, \code{"rolling"}, or \code{"quadratic"}).}
 \item{rho_ts}{A data.frame with columns \code{index}, \code{rho}, \code{rho_lower},
 \code{rho_upper} if \code{method = "rolling"}; \code{NULL} otherwise.}
+\item{robust_se}{Logical; whether HAC standard errors were used.}
+\item{rho2}{Coefficient on debt squared (only for \code{method = "quadratic"}).}
+\item{rho2_se}{Standard error of \code{rho2} (quadratic only).}
+\item{rho2_pvalue}{p-value for \code{rho2} (quadratic only).}
+\item{turning_point}{Debt level where fiscal response peaks,
+\code{-rho/(2*rho2)} (quadratic only).}
 }
 }
 \description{
@@ -68,4 +82,8 @@ print(result)
 Bohn, H. (1998). "The Behavior of U.S. Public Debt and
 Deficits." \emph{Quarterly Journal of Economics}, 113(3), 949--963.
 \doi{10.2307/2586936}
+
+Ghosh, A.R., Kim, J.I., Mendoza, E.G., Ostry, J.D. and Qureshi, M.S.
+(2013). "Fiscal Fatigue, Fiscal Space and Debt Sustainability in Advanced
+Economies." \emph{The Economic Journal}, 123(566), F4--F30.
 }

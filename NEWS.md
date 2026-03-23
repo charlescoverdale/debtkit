@@ -1,3 +1,20 @@
+# debtkit 0.2.0
+
+* HAC (Newey-West) standard errors for `dk_bohn_test()` via `robust_se = TRUE`.
+  Uses a Bartlett kernel with automatic bandwidth selection to correct for
+  serial correlation in fiscal data.
+* Non-linear Bohn test (`method = "quadratic"`) for fiscal fatigue detection
+  following Ghosh et al. (2013). Includes a squared debt term, with the
+  estimated turning point reported when significant.
+* Data-driven stress test calibration from historical data via the `calibrate`
+  parameter in `dk_stress_test()`. When provided, shock sizes are set to one
+  standard deviation of each historical series instead of fixed defaults.
+* Bootstrap residual resampling in `dk_fan_chart()` when using
+  `dk_estimate_shocks(method = "bootstrap")`. Residual rows are resampled
+  with replacement instead of drawing from a multivariate normal.
+* Added IMF SRDSF (2022) references to stress test documentation.
+* Removed unused dead code in sustainability gap calculation.
+
 # debtkit 0.1.0
 
 * Initial release.

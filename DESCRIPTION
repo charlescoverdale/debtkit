@@ -1,11 +1,12 @@
 Package: debtkit
 Title: Debt Sustainability Analysis and Fiscal Risk Assessment
-Version: 0.1.0
+Version: 0.2.0
 Authors@R:
     person("Charles", "Coverdale", , "charlesfcoverdale@gmail.com", role = c("aut", "cre"))
 Description: Analyses government debt sustainability using the standard debt
     dynamics framework from Blanchard (1990) <doi:10.1787/budget-v2-art12-en>
-    and the IMF Debt Sustainability Analysis methodology (IMF, 2013). Projects
+    and the IMF Debt Sustainability Analysis methodology (IMF, 2013) and the
+    Sovereign Risk and Debt Sustainability Framework (IMF, 2022). Projects
     debt-to-GDP paths, decomposes historical debt changes into interest,
     growth, and primary balance contributions, and estimates fiscal reaction
     functions following Bohn (1998) <doi:10.2307/2586936>. Produces stochastic

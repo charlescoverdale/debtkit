@@ -6,5 +6,5 @@
 #' @importFrom graphics plot lines points polygon axis grid legend mtext par
 #'   abline barplot text rect box arrows
 #' @importFrom stats lm residuals var ar cov rnorm quantile coef confint
-#'   fitted predict
+#'   fitted predict pt model.matrix sd
 NULL

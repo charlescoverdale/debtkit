@@ -111,8 +111,17 @@ dk_fan_chart <- function(debt,
     set.seed(seed)
   }
 
-  # ---- Generate shocks via Cholesky decomposition ----
-  if (!is.null(vcov_mat)) {
+  # ---- Generate shocks ----
+  use_bootstrap <- has_shocks && isTRUE(shocks$bootstrap) &&
+    !is.null(shocks$residuals)
+
+  if (use_bootstrap) {
+    # Bootstrap: resample rows of the residual matrix with replacement
+    n_resid <- nrow(shocks$residuals)
+    idx <- sample.int(n_resid, size = n_sim * horizon, replace = TRUE)
+    shock_draws <- shocks$residuals[idx, , drop = FALSE]
+    dim(shock_draws) <- c(n_sim, horizon, 3)
+  } else if (!is.null(vcov_mat)) {
     # Cholesky decomposition: vcov = L %*% t(L)
     L <- t(chol(vcov_mat))  # lower triangular
     # Draw standard normal: (n_sim * horizon) x 3
@@ -121,7 +130,6 @@ dk_fan_chart <- function(debt,
     shock_draws <- Z %*% t(L)  # (n_sim*horizon) x 3
     # Reshape into array: n_sim x horizon x 3
     dim(shock_draws) <- c(n_sim, horizon, 3)
-    # shock_draws[i, t, 1] = growth shock, [i,t,2] = interest shock, [i,t,3] = pb shock
   } else {
     shock_draws <- array(0, dim = c(n_sim, horizon, 3))
   }

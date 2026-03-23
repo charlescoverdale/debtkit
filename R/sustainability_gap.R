@@ -79,7 +79,6 @@ dk_sustainability_gap <- function(debt,
 
   # -- Risk classification helper ---------------------------------------------
   classify_gap <- function(gap) {
-    gap_abs <- abs(gap)
     if (is.na(gap)) return(NA_character_)
     if (gap < 0.02) return("low")
     if (gap < 0.06) return("medium")

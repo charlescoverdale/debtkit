@@ -15,7 +15,8 @@ dk_stress_test(
   exchange_shock = 0.15,
   fx_share = 0,
   pb_shock = -0.01,
-  contingent_shock = 0.1
+  contingent_shock = 0.1,
+  calibrate = NULL
 )
 }
 \arguments{
@@ -49,6 +50,12 @@ balance in the first two years. Default \code{-0.01}.}
 
 \item{contingent_shock}{Numeric scalar. One-off increase in debt-to-GDP from
 contingent liabilities materialising. Default \code{0.10}.}
+
+\item{calibrate}{Optional named list for data-driven shock calibration.
+Should contain numeric vectors \code{gdp_growth_hist}, \code{interest_rate_hist},
+and \code{primary_balance_hist}. When provided, shock sizes are computed as
+one standard deviation of each historical series, replacing the fixed
+defaults. When \code{NULL} (default), the fixed defaults are used.}
 }
 \value{
 An S3 object of class \code{dk_stress} containing:
@@ -95,4 +102,12 @@ st <- dk_stress_test(
 )
 st
 plot(st)
+}
+\references{
+International Monetary Fund (2013). \emph{Staff Guidance Note for Public Debt
+Sustainability Analysis in Market-Access Countries}. IMF Policy Paper.
+
+International Monetary Fund (2022). \emph{Staff Guidance Note on the Sovereign
+Risk and Debt Sustainability Framework for Market Access Countries}.
+IMF Policy Paper.
 }

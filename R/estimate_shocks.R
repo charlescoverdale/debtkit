@@ -133,6 +133,10 @@ dk_estimate_shocks <- function(gdp_growth,
   means <- colMeans(Y)
   names(means) <- var_names
 
+  # For bootstrap method, store residuals for resampling in dk_fan_chart
+  # instead of drawing from multivariate normal
+  use_bootstrap <- (method == "bootstrap")
+
   structure(
     list(
       vcov             = vcov_mat,
@@ -141,7 +145,8 @@ dk_estimate_shocks <- function(gdp_growth,
       residuals        = resid_mat,
       var_coefficients = A,
       var_intercepts   = intercepts,
-      n_obs            = n_eff
+      n_obs            = n_eff,
+      bootstrap        = use_bootstrap
     ),
     class = "dk_shocks"
   )
