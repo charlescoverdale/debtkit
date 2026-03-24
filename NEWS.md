@@ -1,3 +1,8 @@
+# debtkit 0.1.1
+
+* Fixed Bohn (1998) DOI: replaced defunct JSTOR DOI with QJE publisher DOI
+  (10.1162/003355398555793).
+
 # debtkit 0.1.0
 
 * Initial release.

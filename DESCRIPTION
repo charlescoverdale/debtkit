@@ -1,6 +1,6 @@
 Package: debtkit
 Title: Debt Sustainability Analysis and Fiscal Risk Assessment
-Version: 0.1.0
+Version: 0.1.1
 Authors@R:
     person("Charles", "Coverdale", , "charlesfcoverdale@gmail.com", role = c("aut", "cre"))
 Description: Analyses government debt sustainability using the standard debt
@@ -9,7 +9,7 @@ Description: Analyses government debt sustainability using the standard debt
     Sovereign Risk and Debt Sustainability Framework (IMF, 2022). Projects
     debt-to-GDP paths, decomposes historical debt changes into interest,
     growth, and primary balance contributions, and estimates fiscal reaction
-    functions following Bohn (1998) <doi:10.2307/2586936>. Produces stochastic
+    functions following Bohn (1998) <doi:10.1162/003355398555793>. Produces stochastic
     fan charts via Monte Carlo simulation, standardised stress tests, and IMF-
     style heat map risk assessments. Computes S1/S2 sustainability gap
     indicators used by the European Commission. All methods are pure

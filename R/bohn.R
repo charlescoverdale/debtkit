@@ -49,7 +49,7 @@
 #' @references
 #' Bohn, H. (1998). "The Behavior of U.S. Public Debt and
 #'   Deficits." \emph{Quarterly Journal of Economics}, 113(3), 949--963.
-#'   \doi{10.2307/2586936}
+#'   \doi{10.1162/003355398555793}
 #'
 #' Ghosh, A.R., Kim, J.I., Mendoza, E.G., Ostry, J.D. and Qureshi, M.S.
 #'   (2013). "Fiscal Fatigue, Fiscal Space and Debt Sustainability in Advanced
