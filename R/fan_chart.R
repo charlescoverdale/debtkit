@@ -106,13 +106,8 @@ dk_fan_chart <- function(debt,
     vcov_mat <- NULL
   }
 
-  # ---- Set seed (save/restore RNG state) ----
+  # ---- Set seed ----
   if (!is.null(seed)) {
-    old_seed <- get0(".Random.seed", envir = globalenv())
-    on.exit({
-      if (is.null(old_seed)) rm(".Random.seed", envir = globalenv())
-      else assign(".Random.seed", old_seed, envir = globalenv())
-    }, add = TRUE)
     set.seed(seed)
   }
 

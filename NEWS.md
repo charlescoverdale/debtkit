@@ -1,3 +1,8 @@
+# debtkit 0.1.2
+
+* Removed `.GlobalEnv` modification in `dk_fan_chart()` seed handling, per CRAN
+  policy.
+
 # debtkit 0.1.1
 
 * Fixed Bohn (1998) DOI: replaced defunct JSTOR DOI with QJE publisher DOI

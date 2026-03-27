@@ -9,5 +9,6 @@
 
 ## Resubmission
 
-Fixed the Bohn (1998) DOI as flagged by Uwe Ligges: replaced defunct JSTOR DOI
-(10.2307/2586936) with the QJE publisher DOI (10.1162/003355398555793).
+Removed `.GlobalEnv` modification in `dk_fan_chart()` seed handling, as flagged
+by Konstanze Lauseker. `set.seed()` is now called directly without
+save/restore of `.Random.seed`.
