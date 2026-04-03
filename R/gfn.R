@@ -99,11 +99,60 @@ dk_gfn <- function(debt,
     }
   }
 
-  data.frame(
+  out <- data.frame(
     year             = seq_len(horizon),
     primary_deficit  = primary_deficit,
     interest_payments = interest_payments,
     maturing_debt    = maturing_debt,
     gfn              = gfn
   )
+
+  structure(out, class = c("dk_gfn", "data.frame"),
+            debt = debt, horizon = horizon)
+}
+
+#' @export
+print.dk_gfn <- function(x, ...) {
+  cli::cli_h3("Gross Financing Needs (% of GDP)")
+  cli::cli_text("")
+
+  hdr <- sprintf("  %-6s %10s %10s %10s %10s",
+                 "Year", "Deficit", "Interest", "Maturing", "GFN")
+  cat(hdr, "\n")
+  cat(paste(rep("-", nchar(hdr)), collapse = ""), "\n")
+
+
+  for (i in seq_len(nrow(x))) {
+    cat(sprintf("  %-6d %9.1f%% %9.1f%% %9.1f%% %9.1f%%\n",
+                x$year[i],
+                x$primary_deficit[i] * 100,
+                x$interest_payments[i] * 100,
+                x$maturing_debt[i] * 100,
+                x$gfn[i] * 100))
+  }
+  invisible(x)
+}
+
+#' @export
+plot.dk_gfn <- function(x, ...) {
+  n <- nrow(x)
+  ylim <- c(0, max(x$gfn) * 1.3) * 100
+
+  barplot(
+    rbind(x$primary_deficit, x$interest_payments, x$maturing_debt) * 100,
+    beside = FALSE,
+    names.arg = x$year,
+    col = c("#003078", "#5694CA", "#D4351C"),
+    ylim = ylim,
+    ylab = "% of GDP",
+    xlab = "Year",
+    main = "Gross Financing Needs",
+    border = NA,
+    ...
+  )
+  legend("topright",
+         legend = c("Primary deficit", "Interest", "Maturing debt"),
+         fill = c("#003078", "#5694CA", "#D4351C"),
+         border = NA, bty = "n", cex = 0.8)
+  invisible(x)
 }

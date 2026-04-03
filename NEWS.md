@@ -1,3 +1,8 @@
+# debtkit 0.1.3
+
+* `dk_gfn()` now returns an S3 object of class `dk_gfn` with dedicated
+  `print()` and `plot()` methods, consistent with other debtkit functions.
+
 # debtkit 0.1.2
 
 * Removed `.GlobalEnv` modification in `dk_fan_chart()` seed handling, per CRAN
