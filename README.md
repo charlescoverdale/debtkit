@@ -272,12 +272,13 @@ All objects returned by `dk_project()`, `dk_decompose()`, `dk_fan_chart()`, `dk_
 
 ## Related packages
 
-| Package | Description |
-|---------|-------------|
-| [yieldcurves](https://github.com/charlescoverdale/yieldcurves) | Yield curve fitting and analysis |
-| [inflationkit](https://github.com/charlescoverdale/inflationkit) | Inflation analysis and core measures |
-| [fred](https://github.com/charlescoverdale/fred) | Federal Reserve Economic Data |
-| [readoecd](https://github.com/charlescoverdale/readoecd) | OECD data access |
+| Package | What it covers |
+|---|---|
+| [`yieldcurves`](https://github.com/charlescoverdale/yieldcurves) | Yield curve fitting (Nelson-Siegel, Svensson) and term structure analysis |
+| [`inflationkit`](https://github.com/charlescoverdale/inflationkit) | Inflation decomposition, core measures, and Phillips curve estimation |
+| [`obr`](https://github.com/charlescoverdale/obr) | OBR fiscal forecasts and the UK Public Finances Databank |
+| [`fred`](https://github.com/charlescoverdale/fred) | Federal Reserve Economic Data (US Treasury yields, debt levels) |
+| [`readoecd`](https://github.com/charlescoverdale/readoecd) | OECD government debt and fiscal balance data |
 
 
 ## Issues
