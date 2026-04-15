@@ -13,6 +13,9 @@
 ## Installation
 
 ```r
+install.packages("debtkit")
+
+# Or install the development version from GitHub
 # install.packages("devtools")
 devtools::install_github("charlescoverdale/debtkit")
 ```
