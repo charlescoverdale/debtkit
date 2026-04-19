@@ -1,0 +1,441 @@
+---
+title: "Debtkit: Debt Sustainability Analysis and Fiscal Risk Assessment in R"
+date: "2026-04-19"
+abstract: >
+  The debtkit package implements the standard debt sustainability
+  analysis toolkit used by the International Monetary Fund, the
+  European Commission, finance ministries, and central banks. It
+  projects debt-to-GDP paths via the canonical debt dynamics
+  equation; decomposes historical debt changes into interest,
+  growth, primary balance, and stock-flow adjustment contributions;
+  estimates fiscal reaction functions following Bohn (1998);
+  produces stochastic fan charts via Monte Carlo simulation; runs
+  the six standardised IMF stress tests; builds IMF-style heat maps
+  and gross financing needs projections; and computes the European
+  Commission S1 and S2 sustainability-gap indicators. Twelve
+  exported functions share a uniform dk_ prefix and a
+  data-frame-in, S3-object-out interface, with no dependencies
+  beyond base R and cli. The package is available on CRAN.
+draft: false
+author:
+  - name: Charles Coverdale
+    affiliation: Independent
+    address:
+    - London, United Kingdom
+    url: https://github.com/charlescoverdale/debtkit
+    email: charles.f.coverdale@gmail.com
+type: package
+journal:
+  section: "Research article"
+output:
+  rjtools::rjournal_article:
+    self_contained: yes
+    toc: no
+header-includes:
+  - \renewcommand{\address}[1]{}
+bibliography: RJreferences.bib
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE,
+                      fig.align = "center", out.width = "100%")
+```
+
+# Introduction
+
+The \CRANpkg{debtkit} package implements the standard workflow for
+government debt sustainability analysis (DSA) in R. Twelve exported
+functions cover deterministic projections, historical
+decomposition, stochastic fan charts, IMF stress tests, Bohn (1998)
+fiscal reaction function estimation, IMF-style heat maps, gross
+financing needs, and European Commission S1 and S2
+sustainability-gap indicators. Every function shares a uniform
+\code{dk\_} prefix and operates on plain numeric vectors, with no
+dependency on any data-vendor package.
+
+Debt sustainability analysis has become a standard requirement for
+fiscal policy in advanced and emerging economies alike since the
+European sovereign debt crisis and, more recently, since the
+pandemic-era surge in public debt. The International Monetary
+Fund's Sovereign Risk and Debt Sustainability Framework
+[@imf2022] asks members to assess near-term risk, medium-term
+debt dynamics, and long-term fiscal pressures under a standardised
+template. The European Commission's Fiscal Sustainability Report
+applies the S1 and S2 indicators [@ec2024fsr] to each Member State
+annually. Finance ministries running their own DSAs typically
+assemble the same building blocks from first principles.
+
+The R ecosystem has lacked a dedicated DSA package. Users have
+written bespoke code combining hand-rolled implementations of the
+IMF and EC methods. \CRANpkg{debtkit} consolidates these
+operations into a single tested package with the standard methods
+exposed through a clean interface.
+
+# Background
+
+**The debt dynamics equation.** @blanchard1990 expresses the law
+of motion for the debt-to-GDP ratio as
+$$d_{t+1} = \frac{1 + r_{t+1}}{1 + g_{t+1}} d_t - pb_{t+1} + sfa_{t+1},$$
+where $d_t$ is the debt ratio, $r$ the effective nominal interest
+rate, $g$ the nominal GDP growth rate, $pb$ the primary balance,
+and $sfa$ the stock-flow adjustment (valuation effects,
+privatisation receipts, below-the-line operations). When $r < g$,
+debt dynamics favour the fiscal authority: even a primary deficit
+is consistent with a falling debt ratio. When $r > g$, the
+interest-growth differential is a headwind that must be offset by
+primary surpluses.
+
+**Historical decomposition.** Any observed path of debt can be
+decomposed ex post into contributions from the interest effect,
+the growth effect, the primary balance, and the stock-flow
+adjustment. The decomposition is exact up to the stock-flow
+adjustment residual. The IMF and European Commission report this
+decomposition as a standard diagnostic.
+
+**Fiscal reaction functions.** @bohn1998 shows that a sufficient
+condition for long-run solvency is that the primary balance
+responds positively to the lagged debt ratio: a government running
+a higher debt must, on average, run a higher primary surplus. The
+statistical test is a regression $pb_t = \alpha + \beta d_{t-1} +
+\gamma' X_t + \varepsilon_t$, where the null of unsustainability is
+$\beta \leq 0$. @mendoza2008international extend the test to a
+cross-country panel and document a positive $\beta$ in most
+advanced economies.
+
+**Stochastic fan charts.** Deterministic projections are a useful
+central case, but the policy question is typically about risk:
+what is the chance that debt exceeds some threshold over a
+five-to-ten-year horizon? @celasun2006primary introduced the
+stochastic debt fan chart, which simulates thousands of debt paths
+under an estimated joint distribution of macroeconomic shocks, and
+reports debt-at-risk quantiles. The IMF DSA template and the
+European Commission Fiscal Sustainability Report both include a
+stochastic fan chart.
+
+**Stress tests.** The IMF standardised DSA stress tests
+[@imf2013; @imf2022] subject the baseline to six shocks: a
+growth shock, an interest-rate shock, a primary-balance shock, a
+combined macro shock, an exchange-rate shock (for countries with
+foreign-currency debt), and a contingent-liability realisation.
+Each shock produces an alternative debt path, and the IMF heat
+map colour-codes the resulting risk levels.
+
+**Sustainability gaps.** The European Commission's S1 indicator
+reports the permanent increase in the structural primary balance
+required to reach a 60 per cent debt-to-GDP ratio by a target
+horizon. The S2 indicator is the permanent adjustment required to
+satisfy the intertemporal budget constraint, accounting for the
+present value of projected ageing costs. Both are the EC's
+summary measures of fiscal sustainability risk.
+
+# Package design
+
+## Architecture
+
+\CRANpkg{debtkit} is pure R with no compiled code. Runtime imports
+are \CRANpkg{cli}, `grDevices`, `graphics`, and `stats`. R 4.1.0
+or later is required. The test suite contains over one hundred
+tests covering every exported function.
+
+## Uniform function interface
+
+Every exported function is prefixed \code{dk\_}. Modelling
+functions accept numeric vectors of debt, interest rates, GDP
+growth, and primary balance, all as decimals (so 5 per cent is
+0.05). The core modelling quartet is \code{dk\_project()},
+\code{dk\_decompose()}, \code{dk\_bohn\_test()}, and
+\code{dk\_fan\_chart()}. Diagnostic functions accept the derived
+quantities: \code{dk\_heat\_map()},
+\code{dk\_sustainability\_gap()}, and \code{dk\_gfn()}. Helpers
+wrap or generate the inputs: \code{dk\_compare()},
+\code{dk\_sample\_data()}, \code{dk\_estimate\_shocks()}, and
+\code{dk\_stress\_test()}.
+
+## S3 classes and methods
+
+Each function returns an S3 object with a \code{print()} method.
+The main classes are \code{dk\_projection},
+\code{dk\_decomposition}, \code{dk\_bohn}, and \code{dk\_fan}. The
+diagnostic classes are \code{dk\_stress}, \code{dk\_heat\_map},
+\code{dk\_gfn}, \code{dk\_sustainability\_gap}, and
+\code{dk\_shocks}. Where geometric intuition matters, a
+\code{plot()} method is provided. \code{dk\_compare()} takes a
+list of projections and produces a side-by-side comparison.
+
+## Reproducibility
+
+All numerical results are deterministic given the input. The only
+stochastic element is Monte Carlo simulation in
+\code{dk\_fan\_chart()} and the bootstrap option in
+\code{dk\_estimate\_shocks()}; both accept a \code{seed} argument
+for reproducibility. The package ships a synthetic
+\code{dk\_sample\_data()} dataset used in examples. Real-data
+applications use fiscal series from authoritative sources: FRED,
+World Bank Development Indicators, OECD, or national statistical
+offices.
+
+# Deterministic projections and historical decomposition
+
+\code{dk\_project(debt, interest\_rate, gdp\_growth,
+primary\_balance, sfa, horizon, date)} projects a debt path forward
+under constant (or time-varying) assumptions. It returns a debt
+path, an annual contribution decomposition, and a metadata record.
+\code{dk\_rg()} returns the interest-rate-growth differential
+$(r-g)/(1+g)$ and the debt-stabilising primary balance.
+
+\code{dk\_decompose(debt, interest\_rate, gdp\_growth,
+primary\_balance, years)} decomposes the observed path into four
+contributions: interest, growth, primary balance, and stock-flow
+adjustment. Figure \@ref(fig:decompose) shows the decomposition
+for the United States over 2004 to 2023, using Federal Reserve
+Bank of St.\ Louis Economic Data (FRED) series for debt held by
+the public (\texttt{GFDEGDQ188S}), the federal budget balance
+(\texttt{FYFSGDA188S}) adjusted by interest outlays to recover the
+primary balance, the ten-year Treasury yield as the effective
+rate, and BEA GDP for the growth series.
+
+```{r decompose, fig.cap = "Annual contributions to the change in US federal debt/GDP, 2004 to 2023. Components: interest effect (red), growth effect (green, negative), primary deficit (orange, plotted positive so that a deficit adds to debt), stock-flow adjustment (grey). Dots mark the observed annual change in the debt ratio. The global financial crisis (2008 to 2010) shows a large positive interest and primary-deficit contribution. The 2020 pandemic year shows the largest single-year jump, driven by primary-deficit contribution. Source: FRED \\texttt{GFDEGDQ188S}, \\texttt{FYFSGDA188S}, \\texttt{IRLTLT01USM156N}, and \\texttt{A091RC1Q027SBEA}.", fig.alt = "A stacked column chart of annual contributions to the change in the US federal debt-to-GDP ratio from 2004 to 2023. Each year has four coloured bars: interest (red), growth (green, usually negative), primary deficit (orange), and stock-flow adjustment (grey). Black dots mark the total observed annual change in the debt ratio. Two periods stand out: 2008 to 2010 shows large positive interest and primary-deficit contributions, and 2020 shows the largest single-year jump, dominated by a very large positive orange bar."}
+knitr::include_graphics("figures/fig1_decompose.pdf")
+```
+
+# Cross-country debt trajectories
+
+The debt-to-GDP ratio is the single most-watched fiscal indicator
+in the advanced-economy policy debate. Figure
+\@ref(fig:cross-country) plots FRED-sourced gross government debt
+series for three advanced economies, 1990 to 2023: Japan, the
+United States, and the United Kingdom. Japan sits in a different
+regime to the Anglo-Saxon pair, tracking above 200 per cent of GDP
+since the mid-2010s without a sovereign funding crisis; the United
+States and the United Kingdom each moved from roughly 40 per cent
+in the early 1990s to roughly 100 per cent by the early 2020s. The
+2008 financial crisis and the 2020 pandemic are each visible as
+level shifts.
+
+```{r cross-country, fig.cap = "Gross government debt, percentage of GDP, 1990 to 2023. Data: FRED series \\texttt{GFDEGDQ188S} (United States, aggregated to annual), \\texttt{GGGDTAGBA188N} (United Kingdom), \\texttt{DEBTTLJPA188A} (Japan). Japan reached roughly 240 per cent of GDP by 2022 and remains the outlier. The United Kingdom and the United States converged to roughly 100 per cent of GDP after the 2020 pandemic from starting points near 40 per cent in 1990.", fig.alt = "A line chart showing three time series of gross government debt as a percentage of GDP from 1990 to 2023 for Japan, the United States, and the United Kingdom. Japan rises from about 60 per cent in 1990 to roughly 240 per cent by the early 2020s and stays well above the other two countries throughout. The United States and the United Kingdom both start near 30 to 40 per cent in 1990 and rise gradually, with level jumps after 2008 and 2020, ending close to 100 to 120 per cent of GDP."}
+knitr::include_graphics("figures/fig2_cross_country.pdf")
+```
+
+# Stochastic fan charts
+
+\code{dk\_estimate\_shocks()} fits a vector autoregression or
+bootstrap resampler to historical residuals of growth, interest
+rate, and primary balance, returning the estimated innovation
+distribution. \code{dk\_fan\_chart()} then simulates debt paths
+under repeated draws from that distribution and returns quantiles
+at user-specified confidence levels.
+
+Figure \@ref(fig:fan) shows a ten-year fan chart for the US
+federal debt ratio starting from the 2023 end-of-sample
+observation, simulating two thousand paths using shocks estimated
+by first-order VAR on the 2004 to 2023 panel. The fan widens
+rapidly over the horizon, reflecting the accumulation of variance
+over time, and the median (central blue line) diverges from the
+baseline (red dashed) that holds macro conditions fixed at their
+2023 levels.
+
+```{r fan, fig.cap = "Stochastic fan chart for US federal debt held by the public, 2023 to 2033, 2000 Monte Carlo simulations. The shaded bands show simulation quantiles: the inner band is the 50 per cent interval (25th to 75th percentile), the outer band the 80 per cent interval (10th to 90th). The solid blue line is the simulation median; the red dashed line is the deterministic baseline that holds macro conditions fixed at their 2023 values. Shocks are drawn from a first-order VAR fitted to 2004 to 2023 residuals on growth, interest rate, and primary balance.", fig.alt = "A fan chart projecting US federal debt held by the public from 2023 to 2033. A dark blue solid line traces the simulation median, rising gently over time. A red dashed line marks the deterministic baseline. Two concentric shaded blue bands show the 50 per cent and 80 per cent uncertainty intervals, widening steadily from 2023 onward to span a broad range by 2033."}
+knitr::include_graphics("figures/fig3_fan.pdf")
+```
+
+# Stress tests and fiscal reaction functions
+
+\code{dk\_stress\_test()} runs the six standardised IMF DSA stress
+tests: a growth shock, an interest-rate shock, a primary-balance
+shock, a combined macro shock, an exchange-rate shock, and a
+contingent-liability shock. Each scenario returns a debt path.
+Figure \@ref(fig:stress) overlays the paths for the US baseline
+with each stress applied.
+
+```{r stress, fig.cap = "US federal debt/GDP under IMF standardised stress tests, five-year horizon from 2023. Baseline (grey) plus six alternatives: a one percentage-point growth shock, a two percentage-point interest shock, a one percentage-point primary-balance shock, a combined macro shock, an exchange-rate shock (US dollar debt, so effectively no impact), and a contingent-liability realisation. The interest shock is the most adverse single scenario for an advanced economy with rising near-term refinancing needs.", fig.alt = "A line chart showing seven five-year debt-to-GDP projections starting from 2023. A thick grey baseline rises modestly over five years. Six coloured scenario lines diverge from the baseline: the interest-rate shock climbs the fastest and sits well above the baseline by year five, the combined macro and contingent-liability shocks also rise well above baseline, the growth and primary-balance shocks sit moderately above, and the exchange-rate line tracks the baseline closely because US debt is dollar denominated."}
+knitr::include_graphics("figures/fig4_stress.pdf")
+```
+
+\code{dk\_bohn\_test()} estimates the fiscal reaction function
+$pb_t = \alpha + \beta d_{t-1} + \varepsilon_t$ with optional
+Newey-West HAC standard errors. Figure \@ref(fig:bohn) shows the
+raw scatter plus the OLS fit for the US 2004 to 2023 sample. The
+estimated slope is positive but small and statistically imprecise
+on this short sample, consistent with the post-2008 breakdown of
+the pre-crisis fiscal-reaction relationship documented in
+@ghosh2013fiscal.
+
+```{r bohn, fig.cap = "Bohn (1998) fiscal reaction function, US 2004 to 2023. Points are annual observations, coloured by year (blue 2004, red 2023). Red line: OLS fit with Newey-West standard errors. Dashed line at zero primary balance. The positive slope is consistent with a sustainable fiscal reaction function, but the 2004 to 2023 sample includes two large unprecedented shocks (the 2008 crisis and the 2020 pandemic) that widen the confidence interval around the slope estimate.", fig.alt = "A scatter plot with lagged debt-to-GDP on the horizontal axis and the primary balance on the vertical axis, for US annual observations from 2004 to 2023. Points are coloured on a blue-to-red gradient by year. A red regression line slopes gently upward across the cloud, consistent with a positive but modest reaction coefficient. A horizontal dashed line marks zero primary balance, with most points sitting below it and two very low outliers corresponding to 2009 and 2020."}
+knitr::include_graphics("figures/fig5_bohn.pdf")
+```
+
+# Heat maps, financing needs, and sustainability gaps
+
+\code{dk\_heat\_map(debt, debt\_change, gfn, external\_share,
+interest\_growth\_diff)} returns an IMF-style heat-map risk
+assessment, classifying the current debt ratio, the recent change,
+the gross financing need, the external share, and the
+interest-growth differential into low, medium, and high risk
+categories with colour coding aligned to IMF practice.
+
+\code{dk\_gfn()} projects gross financing needs, which are the sum
+of rolled-over principal, new primary deficits, and interest
+payments, as a share of GDP. Arguments are \code{debt},
+\code{maturity}, \code{interest\_rate}, \code{primary\_balance},
+and \code{horizon}. IMF thresholds flag GFN above 15 per cent as a
+near-term risk for advanced economies and above 20 per cent for
+emerging economies.
+
+\code{dk\_sustainability\_gap()} returns the S1 and S2 indicators,
+taking \code{debt}, \code{current\_pb}, \code{target\_debt},
+\code{horizon}, \code{discount\_rate}, and \code{ageing\_cost} as
+arguments. S1 is the permanent primary-balance adjustment needed
+to reach a target debt ratio by a specified horizon. S2 is the
+permanent adjustment needed to satisfy the intertemporal budget
+constraint given projected ageing costs.
+
+# Replication
+
+The canonical workflow is five lines:
+
+```r
+d <- dk_sample_data()
+decomp <- dk_decompose(d$debt, d$interest_rate, d$gdp_growth,
+                        d$primary_balance, years = d$years)
+shocks <- dk_estimate_shocks(d$gdp_growth, d$interest_rate,
+                              d$primary_balance)
+fan <- dk_fan_chart(d$debt[length(d$debt)], 0.04, 0.03, -0.01,
+                     shocks = shocks, n_sim = 1000, horizon = 10,
+                     seed = 42)
+stress <- dk_stress_test(d$debt[length(d$debt)], 0.04, 0.03, -0.01)
+```
+
+Line one loads a synthetic but realistic annual panel. Line two
+decomposes historical debt changes into the standard four
+contributions. Line three estimates the shock distribution. Line
+four produces the stochastic fan chart. Line five runs the six
+IMF stress tests. Table \@ref(tab:debt-panel) lists the
+cross-country summary used in the replication.
+
+```{r debt-panel}
+debt_panel <- data.frame(
+  Country = c("United States", "United Kingdom"),
+  `Debt/GDP (first)` = c("40.9% (1990)", "30.2% (1990)"),
+  `Debt/GDP (latest)` = c("118.0% (2024)", "131.1% (2024)"),
+  `Peak (year)` = c("126.4% (2020)", "194.7% (2020)"),
+  Change = c("+77.0 pp", "+100.9 pp"),
+  check.names = FALSE,
+  stringsAsFactors = FALSE
+)
+knitr::kable(
+  debt_panel,
+  caption = "Central government debt, two advanced economies: first and latest observations plus peak. Data: World Bank \\texttt{GC.DOD.TOTL.GD.ZS}. The United Kingdom and the United States rose from roughly 30 to 40 per cent in 1990 to above 100 per cent by 2024.",
+  booktabs = TRUE
+)
+```
+
+# A case study of post-pandemic debt dynamics
+
+The most-watched fiscal question in US macroeconomic policy since
+2020 has been whether the federal debt ratio, which jumped from 79
+per cent of GDP at end-2019 to 100 per cent by end-2021, is on a
+sustainable trajectory [@blanchard2022fiscal;
+@furman2023weworry]. The \CRANpkg{debtkit} pipeline produces a
+compact answer in three steps.
+
+First, the historical decomposition (Figure \@ref(fig:decompose))
+shows that the 2020 spike was driven almost entirely by the
+primary deficit: the CARES Act and related pandemic relief
+produced a primary deficit of around 12 per cent of GDP against a
+typical post-crisis primary deficit of 3 to 5 per cent. The
+interest and growth effects netted out close to zero because the
+Federal Reserve held rates near the zero lower bound throughout
+2020.
+
+Second, the fan chart (Figure \@ref(fig:fan)) projects the debt
+ratio forward ten years from 2023, incorporating the correlation
+structure of shocks to growth, interest rates, and the primary
+balance estimated by first-order VAR on the 2004 to 2023 panel.
+The 80 per cent confidence band spans a wide range: the optimistic
+tail reaches below the 2023 level, the pessimistic tail moves
+materially higher.
+
+Third, the stress-test grid (Figure \@ref(fig:stress)) shows that
+the interest-rate shock dominates for a country with the US debt
+structure: a two percentage-point increase in the effective rate
+produces the largest upward divergence from the baseline.
+Combining the three diagnostics, the package reproduces the main
+qualitative conclusion of @blanchard2022fiscal: at current
+interest-growth differentials the US debt ratio is manageable, but
+the margin is narrow and sensitive to rate assumptions.
+
+# Limitations
+
+Five limitations apply.
+
+1. \CRANpkg{debtkit} operates on annual data. Quarterly DSA is
+   possible by passing quarterly rates, but the IMF and EC
+   templates are annual and the stress-test calibrations assume
+   annual units.
+2. The stochastic fan chart uses a first-order VAR or bootstrap
+   resampling. Regime-switching, time-varying-parameter, or
+   stochastic-volatility shock models of the kind @stock2007why
+   use for inflation are out of scope.
+3. The S2 indicator requires a trajectory of projected ageing
+   costs, which the package does not produce. Users should source
+   the EC Ageing Report or OECD long-term projections.
+4. Contingent liabilities are treated as a single shock in
+   \code{dk\_stress\_test()}. Granular contingent-liability
+   modelling (guarantee-call probabilities, state-owned enterprise
+   exposures) is beyond the standardised template and is not
+   implemented.
+5. Foreign-currency debt is handled via an exchange-rate shock
+   argument. Pass-through, hedging, and natural-hedging effects
+   are not modelled.
+
+# Appendix of formula definitions
+
+**Debt dynamics equation.** For debt ratio $d_t$, effective
+interest rate $r_t$, nominal GDP growth $g_t$, primary balance
+$pb_t$, and stock-flow adjustment $sfa_t$:
+$$d_{t+1} = \frac{1 + r_{t+1}}{1 + g_{t+1}} d_t - pb_{t+1} + sfa_{t+1}.$$
+
+**Debt-stabilising primary balance.** Given $r$ and $g$, the
+primary balance that keeps $d$ constant is
+$$pb^* = \frac{r - g}{1 + g} d.$$
+
+**Bohn (1998) fiscal reaction function.** The test for fiscal
+sustainability is the sign of $\beta$ in
+$$pb_t = \alpha + \beta\, d_{t-1} + \gamma' X_t + \varepsilon_t,$$
+estimated by ordinary least squares with Newey-West standard
+errors. A positive, statistically significant $\beta$ is a
+sufficient condition for long-run solvency.
+
+**EC S1 sustainability gap.** Permanent adjustment to the
+structural primary balance required to hit a target debt ratio
+$\bar{d}$ by horizon $T$:
+$$S_1 = \frac{\bar{d} - d_0 \cdot \prod_{t=1}^{T} (1+r_t)/(1+g_t)}{\sum_{t=1}^{T}\prod_{s=t+1}^{T}(1+r_s)/(1+g_s)} - pb_0.$$
+
+**EC S2 sustainability gap.** Permanent adjustment required to
+satisfy the intertemporal budget constraint given a projected
+trajectory of ageing costs $\Delta age_t$:
+$$S_2 = (r - g)\, d_0 - pb_0 + \sum_{t=1}^{\infty} e^{-(r-g)t} \Delta age_t.$$
+
+# Conclusion
+
+Debt sustainability analysis is a core activity at every finance
+ministry, central bank, and international financial institution,
+and had been underserved on CRAN. \CRANpkg{debtkit} provides a
+complete DSA workflow in twelve functions: deterministic
+projection, historical decomposition, fiscal-reaction-function
+estimation, stochastic fan charts, IMF stress tests, heat maps,
+gross financing needs, and EC S1 and S2 sustainability gaps. The
+package is pure R, has no data dependencies, and returns S3
+objects with print and plot methods. Planned additions include
+quarterly-frequency support, regime-switching shock models for the
+fan chart, and bundled OECD Ageing Report ageing-cost series to
+make the S2 indicator turnkey.
+
+# Acknowledgements {-}
+
+The Federal Reserve Bank of St.\ Louis Economic Data service and
+the World Bank Development Indicators provide the real-data series
+used in every figure in this paper under open-data licences.
+Olivier Blanchard, Henning Bohn, Paolo Mauro, and the IMF Fiscal
+Affairs Department developed the DSA methodology that the package
+implements.

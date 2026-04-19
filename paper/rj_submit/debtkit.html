@@ -1,0 +1,2243 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1"/>
+  <meta name="generator" content="distill" />
+
+  <style type="text/css">
+  /* Hide doc at startup (prevent jankiness while JS renders/transforms) */
+  body {
+    visibility: hidden;
+  }
+  </style>
+
+ <!--radix_placeholder_import_source-->
+ <!--/radix_placeholder_import_source-->
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css" data-origin="pandoc">
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  { color: #00769e; background-color: #f1f3f5; }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span { color: #00769e; } /* Normal */
+code span.al { color: #ad0000; } /* Alert */
+code span.an { color: #5e5e5e; } /* Annotation */
+code span.at { color: #657422; } /* Attribute */
+code span.bn { color: #ad0000; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #00769e; } /* ControlFlow */
+code span.ch { color: #20794d; } /* Char */
+code span.cn { color: #8f5902; } /* Constant */
+code span.co { color: #5e5e5e; } /* Comment */
+code span.cv { color: #5e5e5e; font-style: italic; } /* CommentVar */
+code span.do { color: #5e5e5e; font-style: italic; } /* Documentation */
+code span.dt { color: #ad0000; } /* DataType */
+code span.dv { color: #ad0000; } /* DecVal */
+code span.er { color: #ad0000; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #ad0000; } /* Float */
+code span.fu { color: #4758ab; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #5e5e5e; } /* Information */
+code span.kw { color: #00769e; } /* Keyword */
+code span.op { color: #5e5e5e; } /* Operator */
+code span.ot { color: #00769e; } /* Other */
+code span.pp { color: #ad0000; } /* Preprocessor */
+code span.sc { color: #5e5e5e; } /* SpecialChar */
+code span.ss { color: #20794d; } /* SpecialString */
+code span.st { color: #20794d; } /* String */
+code span.va { color: #111111; } /* Variable */
+code span.vs { color: #20794d; } /* VerbatimString */
+code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
+</style>
+
+<style>
+  div.csl-bib-body { }
+  div.csl-entry {
+    clear: both;
+      margin-bottom: 0em;
+    }
+  .hanging div.csl-entry {
+    margin-left:2em;
+    text-indent:-2em;
+  }
+  div.csl-left-margin {
+    min-width:2em;
+    float:left;
+  }
+  div.csl-right-inline {
+    margin-left:2em;
+    padding-left:1em;
+  }
+  div.csl-indent {
+    margin-left: 2em;
+  }
+</style>
+
+  <!--radix_placeholder_meta_tags-->
+  <title>Debtkit: Debt Sustainability Analysis and Fiscal Risk Assessment in R</title>
+
+  <meta property="description" itemprop="description" content="The debtkit package implements the standard debt sustainability analysis toolkit used by the International Monetary Fund, the European Commission, finance ministries, and central banks. It projects debt-to-GDP paths via the canonical debt dynamics equation; decomposes historical debt changes into interest, growth, primary balance, and stock-flow adjustment contributions; estimates fiscal reaction functions following Bohn (1998); produces stochastic fan charts via Monte Carlo simulation; runs the six standardised IMF stress tests; builds IMF-style heat maps and gross financing needs projections; and computes the European Commission S1 and S2 sustainability-gap indicators. Twelve exported functions share a uniform dk_ prefix and a data-frame-in, S3-object-out interface, with no dependencies beyond base R and cli. The package is available on CRAN."/>
+
+  <link rel="license" href="https://creativecommons.org/licenses/by/4.0/"/>
+
+  <!--  https://schema.org/Article -->
+  <meta property="article:published" itemprop="datePublished" content="2026-04-19"/>
+  <meta property="article:created" itemprop="dateCreated" content="2026-04-19"/>
+  <meta name="article:author" content="Charles Coverdale"/>
+
+  <!--  https://developers.facebook.com/docs/sharing/webmasters#markup -->
+  <meta property="og:title" content="Debtkit: Debt Sustainability Analysis and Fiscal Risk Assessment in R"/>
+  <meta property="og:type" content="article"/>
+  <meta property="og:description" content="The debtkit package implements the standard debt sustainability analysis toolkit used by the International Monetary Fund, the European Commission, finance ministries, and central banks. It projects debt-to-GDP paths via the canonical debt dynamics equation; decomposes historical debt changes into interest, growth, primary balance, and stock-flow adjustment contributions; estimates fiscal reaction functions following Bohn (1998); produces stochastic fan charts via Monte Carlo simulation; runs the six standardised IMF stress tests; builds IMF-style heat maps and gross financing needs projections; and computes the European Commission S1 and S2 sustainability-gap indicators. Twelve exported functions share a uniform dk_ prefix and a data-frame-in, S3-object-out interface, with no dependencies beyond base R and cli. The package is available on CRAN."/>
+  <meta property="og:locale" content="en_US"/>
+
+  <!--  https://dev.twitter.com/cards/types/summary -->
+  <meta property="twitter:card" content="summary"/>
+  <meta property="twitter:title" content="Debtkit: Debt Sustainability Analysis and Fiscal Risk Assessment in R"/>
+  <meta property="twitter:description" content="The debtkit package implements the standard debt sustainability analysis toolkit used by the International Monetary Fund, the European Commission, finance ministries, and central banks. It projects debt-to-GDP paths via the canonical debt dynamics equation; decomposes historical debt changes into interest, growth, primary balance, and stock-flow adjustment contributions; estimates fiscal reaction functions following Bohn (1998); produces stochastic fan charts via Monte Carlo simulation; runs the six standardised IMF stress tests; builds IMF-style heat maps and gross financing needs projections; and computes the European Commission S1 and S2 sustainability-gap indicators. Twelve exported functions share a uniform dk_ prefix and a data-frame-in, S3-object-out interface, with no dependencies beyond base R and cli. The package is available on CRAN."/>
+
+  <!--  https://scholar.google.com/intl/en/scholar/inclusion.html#indexing -->
+  <meta name="citation_title" content="Debtkit: Debt Sustainability Analysis and Fiscal Risk Assessment in R"/>
+  <meta name="citation_pdf_url" content="debtkit.pdf"/>
+  <meta name="citation_journal_title" content="The R Journal"/>
+  <meta name="citation_issn" content="2073-4859"/>
+  <meta name="citation_firstpage" content="1"/>
+  <meta name="citation_fulltext_world_readable" content=""/>
+  <meta name="citation_online_date" content="2026/04/19"/>
+  <meta name="citation_publication_date" content="2026/04/19"/>
+  <meta name="citation_author" content="Charles Coverdale"/>
+  <meta name="citation_author_institution" content="Independent"/>
+  <!--/radix_placeholder_meta_tags-->
+  
+  <meta name="citation_reference" content="citation_title=Suggestions for a new set of fiscal indicators;citation_doi=10.1787/435618162862;citation_author=Olivier J. Blanchard"/>
+  <meta name="citation_reference" content="citation_title=The behavior of U.S. Public debt and deficits;citation_volume=113;citation_doi=10.1162/003355398555793;citation_author=Henning Bohn"/>
+  <meta name="citation_reference" content="citation_title=Staff guidance note for public debt sustainability analysis in market-access countries;citation_publisher=International Monetary Fund;citation_author=Staff guidance note for public debt sustainability analysis in market-access countries"/>
+  <meta name="citation_reference" content="citation_title=Staff guidance note on the sovereign risk and debt sustainability framework for market access countries;citation_publisher=International Monetary Fund;citation_author=Staff guidance note on the sovereign risk and debt sustainability framework for market access countries"/>
+  <meta name="citation_reference" content="citation_title=Fiscal sustainability report 2024;citation_publisher=European Commission, Directorate-General for Economic; Financial Affairs;citation_author=Fiscal sustainability report 2024"/>
+  <meta name="citation_reference" content="citation_title=International evidence on fiscal solvency: Is fiscal policy “responsible”?;citation_volume=55;citation_doi=10.1016/j.jmoneco.2008.06.003;citation_author=Enrique G. Mendoza;citation_author=Jonathan D. Ostry"/>
+  <meta name="citation_reference" content="citation_title=Primary surplus behavior and risks to fiscal sustainability in emerging market countries: A “fan-chart” approach;citation_volume=53;citation_doi=10.2307/30035919;citation_author=Oya Celasun;citation_author=Xavier Debrun;citation_author=Jonathan D. Ostry"/>
+  <meta name="citation_reference" content="citation_title=Fiscal fatigue, fiscal space and debt sustainability in advanced economies;citation_volume=123;citation_doi=10.1111/ecoj.12010;citation_author=Atish R. Ghosh;citation_author=Jun I. Kim;citation_author=Enrique G. Mendoza;citation_author=Jonathan D. Ostry;citation_author=Mahvash S. Qureshi"/>
+  <meta name="citation_reference" content="citation_title=Fiscal policy under low interest rates;citation_publisher=MIT Press;citation_author=Olivier Blanchard"/>
+  <meta name="citation_reference" content="citation_title=Why we should worry about U.S. debt;citation_publisher=Peterson Institute for International Economics working paper;citation_author=Jason Furman;citation_author=Lawrence H. Summers"/>
+  <meta name="citation_reference" content="citation_title=Why has U.S. Inflation become harder to forecast?;citation_volume=39;citation_doi=10.1111/j.1538-4616.2007.00014.x;citation_author=James H. Stock;citation_author=Mark W. Watson"/>
+  <!--radix_placeholder_rmarkdown_metadata-->
+
+  <script type="text/json" id="radix-rmarkdown-metadata">
+  {"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","date","description","draft","author","type","journal","output","header-includes","bibliography","slug","pdf_url","creative_commons","packages","CTV","csl"]}},"value":[{"type":"character","attributes":{},"value":["Debtkit: Debt Sustainability Analysis and Fiscal Risk Assessment in R"]},{"type":"character","attributes":{},"value":["2026-04-19"]},{"type":"character","attributes":{},"value":["The debtkit package implements the standard debt sustainability analysis toolkit used by the International Monetary Fund, the European Commission, finance ministries, and central banks. It projects debt-to-GDP paths via the canonical debt dynamics equation; decomposes historical debt changes into interest, growth, primary balance, and stock-flow adjustment contributions; estimates fiscal reaction functions following Bohn (1998); produces stochastic fan charts via Monte Carlo simulation; runs the six standardised IMF stress tests; builds IMF-style heat maps and gross financing needs projections; and computes the European Commission S1 and S2 sustainability-gap indicators. Twelve exported functions share a uniform dk_ prefix and a data-frame-in, S3-object-out interface, with no dependencies beyond base R and cli. The package is available on CRAN.\n"]},{"type":"logical","attributes":{},"value":[false]},{"type":"list","attributes":{},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["name","affiliation","address","url","email"]}},"value":[{"type":"character","attributes":{},"value":["Charles Coverdale"]},{"type":"character","attributes":{},"value":["Independent"]},{"type":"character","attributes":{},"value":["London, United Kingdom"]},{"type":"character","attributes":{},"value":["https://github.com/charlescoverdale/debtkit"]},{"type":"character","attributes":{},"value":["charles.f.coverdale@gmail.com"]}]}]},{"type":"character","attributes":{},"value":["package"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["title","issn","firstpage","lastpage"]}},"value":[{"type":"character","attributes":{},"value":["The R Journal"]},{"type":"character","attributes":{},"value":["2073-4859"]},{"type":"double","attributes":{},"value":[1]},{"type":"NULL"}]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["distill::distill_article"]}},"value":[{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["self_contained","toc"]}},"value":[{"type":"logical","attributes":{},"value":[true]},{"type":"logical","attributes":{},"value":[false]}]}]},{"type":"character","attributes":{},"value":["\\renewcommand{\\address}[1]{}"]},{"type":"character","attributes":{},"value":["RJreferences.bib"]},{"type":"character","attributes":{},"value":["debtkit"]},{"type":"character","attributes":{},"value":["debtkit.pdf"]},{"type":"character","attributes":{},"value":["CC BY"]},{"type":"list","attributes":{"names":{"type":"character","attributes":{},"value":["cran","bioc"]}},"value":[{"type":"character","attributes":{},"value":["debtkit","cli"]},{"type":"list","attributes":{},"value":[]}]},{"type":"list","attributes":{},"value":[]},{"type":"character","attributes":{},"value":["/Library/Frameworks/R.framework/Versions/4.5-arm64/Resources/library/rjtools/rjournal.csl"]}]}
+  </script>
+  <!--/radix_placeholder_rmarkdown_metadata-->
+  
+  <script type="text/json" id="radix-resource-manifest">
+  {"type":"character","attributes":{},"value":["debtkit.log","debtkit.pdf","debtkit.tex","figures/fig1_decompose.pdf","figures/fig2_cross_country.pdf","figures/fig3_fan.pdf","figures/fig4_stress.pdf","figures/fig5_bohn.pdf","initial_checks.log","motivation-letter/motivation-letter.md","RJournal.sty","RJreferences.bib","RJwrapper.log","RJwrapper.tex"]}
+  </script>
+  <!--radix_placeholder_navigation_in_header-->
+  <!--/radix_placeholder_navigation_in_header-->
+  <!--radix_placeholder_distill-->
+
+  <style type="text/css">
+
+  body {
+    background-color: white;
+  }
+
+  .pandoc-table {
+    width: 100%;
+  }
+
+  .pandoc-table>caption {
+    margin-bottom: 10px;
+  }
+
+  .pandoc-table th:not([align]) {
+    text-align: left;
+  }
+
+  .pagedtable-footer {
+    font-size: 15px;
+  }
+
+  d-byline .byline {
+    grid-template-columns: 2fr 2fr;
+  }
+
+  d-byline .byline h3 {
+    margin-block-start: 1.5em;
+  }
+
+  d-byline .byline .authors-affiliations h3 {
+    margin-block-start: 0.5em;
+  }
+
+  .authors-affiliations .orcid-id {
+    width: 16px;
+    height:16px;
+    margin-left: 4px;
+    margin-right: 4px;
+    vertical-align: middle;
+    padding-bottom: 2px;
+  }
+
+  d-title .dt-tags {
+    margin-top: 1em;
+    grid-column: text;
+  }
+
+  .dt-tags .dt-tag {
+    text-decoration: none;
+    display: inline-block;
+    color: rgba(0,0,0,0.6);
+    padding: 0em 0.4em;
+    margin-right: 0.5em;
+    margin-bottom: 0.4em;
+    font-size: 70%;
+    border: 1px solid rgba(0,0,0,0.2);
+    border-radius: 3px;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  d-article table.gt_table td,
+  d-article table.gt_table th {
+    border-bottom: none;
+    font-size: 100%;
+  }
+
+  .html-widget {
+    margin-bottom: 2.0em;
+  }
+
+  .l-screen-inset {
+    padding-right: 16px;
+  }
+
+  .l-screen .caption {
+    margin-left: 10px;
+  }
+
+  .shaded {
+    background: rgb(247, 247, 247);
+    padding-top: 20px;
+    padding-bottom: 20px;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  .shaded .html-widget {
+    margin-bottom: 0;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  .shaded .shaded-content {
+    background: white;
+  }
+
+  .text-output {
+    margin-top: 0;
+    line-height: 1.5em;
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  hr.section-separator {
+    border: none;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    margin: 0px;
+  }
+
+
+  d-byline {
+    border-top: none;
+  }
+
+  d-article {
+    padding-top: 2.5rem;
+    padding-bottom: 30px;
+    border-top: none;
+  }
+
+  d-appendix {
+    padding-top: 30px;
+  }
+
+  d-article>p>img {
+    width: 100%;
+  }
+
+  d-article h2 {
+    margin: 1rem 0 1.5rem 0;
+  }
+
+  d-article h3 {
+    margin-top: 1.5rem;
+  }
+
+  d-article iframe {
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    margin-bottom: 2.0em;
+    width: 100%;
+  }
+
+  /* Tweak code blocks */
+
+  d-article div.sourceCode code,
+  d-article pre code {
+    font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+  }
+
+  d-article pre,
+  d-article div.sourceCode,
+  d-article div.sourceCode pre {
+    overflow: auto;
+  }
+
+  d-article div.sourceCode {
+    background-color: white;
+  }
+
+  d-article div.sourceCode pre {
+    padding-left: 10px;
+    font-size: 12px;
+    border-left: 2px solid rgba(0,0,0,0.1);
+  }
+
+  d-article pre {
+    font-size: 12px;
+    color: black;
+    background: none;
+    margin-top: 0;
+    text-align: left;
+    white-space: pre;
+    word-spacing: normal;
+    word-break: normal;
+    word-wrap: normal;
+    line-height: 1.5;
+
+    -moz-tab-size: 4;
+    -o-tab-size: 4;
+    tab-size: 4;
+
+    -webkit-hyphens: none;
+    -moz-hyphens: none;
+    -ms-hyphens: none;
+    hyphens: none;
+  }
+
+  d-article pre a {
+    border-bottom: none;
+  }
+
+  d-article pre a:hover {
+    border-bottom: none;
+    text-decoration: underline;
+  }
+
+  d-article details {
+    grid-column: text;
+    margin-bottom: 0.8em;
+  }
+
+  @media(min-width: 768px) {
+
+  d-article pre,
+  d-article div.sourceCode,
+  d-article div.sourceCode pre {
+    overflow: visible !important;
+  }
+
+  d-article div.sourceCode pre {
+    padding-left: 18px;
+    font-size: 14px;
+  }
+
+  /* tweak for Pandoc numbered line within distill */
+  d-article pre.numberSource code > span {
+      left: -2em;
+  }
+
+  d-article pre {
+    font-size: 14px;
+  }
+
+  }
+
+  figure img.external {
+    background: white;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.1);
+    padding: 18px;
+    box-sizing: border-box;
+  }
+
+  /* CSS for d-contents */
+
+  .d-contents {
+    grid-column: text;
+    color: rgba(0,0,0,0.8);
+    font-size: 0.9em;
+    padding-bottom: 1em;
+    margin-bottom: 1em;
+    padding-bottom: 0.5em;
+    margin-bottom: 1em;
+    padding-left: 0.25em;
+    justify-self: start;
+  }
+
+  @media(min-width: 1000px) {
+    .d-contents.d-contents-float {
+      height: 0;
+      grid-column-start: 1;
+      grid-column-end: 4;
+      justify-self: center;
+      padding-right: 3em;
+      padding-left: 2em;
+    }
+  }
+
+  .d-contents nav h3 {
+    font-size: 18px;
+    margin-top: 0;
+    margin-bottom: 1em;
+  }
+
+  .d-contents li {
+    list-style-type: none
+  }
+
+  .d-contents nav > ul {
+    padding-left: 0;
+  }
+
+  .d-contents ul {
+    padding-left: 1em
+  }
+
+  .d-contents nav ul li {
+    margin-top: 0.6em;
+    margin-bottom: 0.2em;
+  }
+
+  .d-contents nav a {
+    font-size: 13px;
+    border-bottom: none;
+    text-decoration: none
+    color: rgba(0, 0, 0, 0.8);
+  }
+
+  .d-contents nav a:hover {
+    text-decoration: underline solid rgba(0, 0, 0, 0.6)
+  }
+
+  .d-contents nav > ul > li > a {
+    font-weight: 600;
+  }
+
+  .d-contents nav > ul > li > ul {
+    font-weight: inherit;
+  }
+
+  .d-contents nav > ul > li > ul > li {
+    margin-top: 0.2em;
+  }
+
+
+  .d-contents nav ul {
+    margin-top: 0;
+    margin-bottom: 0.25em;
+  }
+
+  .d-article-with-toc h2:nth-child(2) {
+    margin-top: 0;
+  }
+
+
+  /* Figure */
+
+  .figure {
+    position: relative;
+    margin-bottom: 2.5em;
+    margin-top: 1.5em;
+  }
+
+  .figure .caption {
+    color: rgba(0, 0, 0, 0.6);
+    font-size: 12px;
+    line-height: 1.5em;
+  }
+
+  .figure img.external {
+    background: white;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.1);
+    padding: 18px;
+    box-sizing: border-box;
+  }
+
+  .figure .caption a {
+    color: rgba(0, 0, 0, 0.6);
+  }
+
+  .figure .caption b,
+  .figure .caption strong, {
+    font-weight: 600;
+    color: rgba(0, 0, 0, 1.0);
+  }
+
+  /* Citations */
+
+  d-article .citation {
+    color: inherit;
+    cursor: inherit;
+  }
+
+  div.hanging-indent{
+    margin-left: 1em; text-indent: -1em;
+  }
+
+  /* Citation hover box */
+
+  .tippy-box[data-theme~=light-border] {
+    background-color: rgba(250, 250, 250, 0.95);
+  }
+
+  .tippy-content > p {
+    margin-bottom: 0;
+    padding: 2px;
+  }
+
+
+  /* Tweak 1000px media break to show more text */
+
+  @media(min-width: 1000px) {
+    .base-grid,
+    distill-header,
+    d-title,
+    d-abstract,
+    d-article,
+    d-appendix,
+    distill-appendix,
+    d-byline,
+    d-footnote-list,
+    d-citation-list,
+    distill-footer {
+      grid-template-columns: [screen-start] 1fr [page-start kicker-start] 80px [middle-start] 50px [text-start kicker-end] 65px 65px 65px 65px 65px 65px 65px 65px [text-end gutter-start] 65px [middle-end] 65px [page-end gutter-end] 1fr [screen-end];
+      grid-column-gap: 16px;
+    }
+
+    .grid {
+      grid-column-gap: 16px;
+    }
+
+    d-article {
+      font-size: 1.06rem;
+      line-height: 1.7em;
+    }
+    figure .caption, .figure .caption, figure figcaption {
+      font-size: 13px;
+    }
+  }
+
+  @media(min-width: 1180px) {
+    .base-grid,
+    distill-header,
+    d-title,
+    d-abstract,
+    d-article,
+    d-appendix,
+    distill-appendix,
+    d-byline,
+    d-footnote-list,
+    d-citation-list,
+    distill-footer {
+      grid-template-columns: [screen-start] 1fr [page-start kicker-start] 60px [middle-start] 60px [text-start kicker-end] 60px 60px 60px 60px 60px 60px 60px 60px [text-end gutter-start] 60px [middle-end] 60px [page-end gutter-end] 1fr [screen-end];
+      grid-column-gap: 32px;
+    }
+
+    .grid {
+      grid-column-gap: 32px;
+    }
+  }
+
+
+  /* Get the citation styles for the appendix (not auto-injected on render since
+     we do our own rendering of the citation appendix) */
+
+  d-appendix .citation-appendix,
+  .d-appendix .citation-appendix {
+    font-size: 11px;
+    line-height: 15px;
+    border-left: 1px solid rgba(0, 0, 0, 0.1);
+    padding-left: 18px;
+    border: 1px solid rgba(0,0,0,0.1);
+    background: rgba(0, 0, 0, 0.02);
+    padding: 10px 18px;
+    border-radius: 3px;
+    color: rgba(150, 150, 150, 1);
+    overflow: hidden;
+    margin-top: -12px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
+
+  /* Include appendix styles here so they can be overridden */
+
+  d-appendix {
+    contain: layout style;
+    font-size: 0.8em;
+    line-height: 1.7em;
+    margin-top: 60px;
+    margin-bottom: 0;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    color: rgba(0,0,0,0.5);
+    padding-top: 60px;
+    padding-bottom: 48px;
+  }
+
+  d-appendix h3 {
+    grid-column: page-start / text-start;
+    font-size: 15px;
+    font-weight: 500;
+    margin-top: 1em;
+    margin-bottom: 0;
+    color: rgba(0,0,0,0.65);
+  }
+
+  d-appendix h3 + * {
+    margin-top: 1em;
+  }
+
+  d-appendix ol {
+    padding: 0 0 0 15px;
+  }
+
+  @media (min-width: 768px) {
+    d-appendix ol {
+      padding: 0 0 0 30px;
+      margin-left: -30px;
+    }
+  }
+
+  d-appendix li {
+    margin-bottom: 1em;
+  }
+
+  d-appendix a {
+    color: rgba(0, 0, 0, 0.6);
+  }
+
+  d-appendix > * {
+    grid-column: text;
+  }
+
+  d-appendix > d-footnote-list,
+  d-appendix > d-citation-list,
+  d-appendix > distill-appendix {
+    grid-column: screen;
+  }
+
+  /* Include footnote styles here so they can be overridden */
+
+  d-footnote-list {
+    contain: layout style;
+  }
+
+  d-footnote-list > * {
+    grid-column: text;
+  }
+
+  d-footnote-list a.footnote-backlink {
+    color: rgba(0,0,0,0.3);
+    padding-left: 0.5em;
+  }
+
+
+
+  /* Anchor.js */
+
+  .anchorjs-link {
+    /*transition: all .25s linear; */
+    text-decoration: none;
+    border-bottom: none;
+  }
+  *:hover > .anchorjs-link {
+    margin-left: -1.125em !important;
+    text-decoration: none;
+    border-bottom: none;
+  }
+
+  /* Social footer */
+
+  .social_footer {
+    margin-top: 30px;
+    margin-bottom: 0;
+    color: rgba(0,0,0,0.67);
+  }
+
+  .disqus-comments {
+    margin-right: 30px;
+  }
+
+  .disqus-comment-count {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.4);
+    cursor: pointer;
+  }
+
+  #disqus_thread {
+    margin-top: 30px;
+  }
+
+  .article-sharing a {
+    border-bottom: none;
+    margin-right: 8px;
+  }
+
+  .article-sharing a:hover {
+    border-bottom: none;
+  }
+
+  .sidebar-section.subscribe {
+    font-size: 12px;
+    line-height: 1.6em;
+  }
+
+  .subscribe p {
+    margin-bottom: 0.5em;
+  }
+
+
+  .article-footer .subscribe {
+    font-size: 15px;
+    margin-top: 45px;
+  }
+
+
+  .sidebar-section.custom {
+    font-size: 12px;
+    line-height: 1.6em;
+  }
+
+  .custom p {
+    margin-bottom: 0.5em;
+  }
+
+  /* Styles for listing layout (hide title) */
+  .layout-listing d-title, .layout-listing .d-title {
+    display: none;
+  }
+
+  /* Styles for posts lists (not auto-injected) */
+
+
+  .posts-with-sidebar {
+    padding-left: 45px;
+    padding-right: 45px;
+  }
+
+  .posts-list .description h2,
+  .posts-list .description p {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", Arial, sans-serif;
+  }
+
+  .posts-list .description h2 {
+    font-weight: 700;
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .posts-list h2.post-tag {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    padding-bottom: 12px;
+  }
+  .posts-list {
+    margin-top: 60px;
+    margin-bottom: 24px;
+  }
+
+  .posts-list .post-preview {
+    text-decoration: none;
+    overflow: hidden;
+    display: block;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 24px 0;
+  }
+
+  .post-preview-last {
+    border-bottom: none !important;
+  }
+
+  .posts-list .posts-list-caption {
+    grid-column: screen;
+    font-weight: 400;
+  }
+
+  .posts-list .post-preview h2 {
+    margin: 0 0 6px 0;
+    line-height: 1.2em;
+    font-style: normal;
+    font-size: 24px;
+  }
+
+  .posts-list .post-preview p {
+    margin: 0 0 12px 0;
+    line-height: 1.4em;
+    font-size: 16px;
+  }
+
+  .posts-list .post-preview .thumbnail {
+    box-sizing: border-box;
+    margin-bottom: 24px;
+    position: relative;
+    max-width: 500px;
+  }
+  .posts-list .post-preview img {
+    width: 100%;
+    display: block;
+  }
+
+  .posts-list .metadata {
+    font-size: 12px;
+    line-height: 1.4em;
+    margin-bottom: 18px;
+  }
+
+  .posts-list .metadata > * {
+    display: inline-block;
+  }
+
+  .posts-list .metadata .publishedDate {
+    margin-right: 2em;
+  }
+
+  .posts-list .metadata .dt-authors {
+    display: block;
+    margin-top: 0.3em;
+    margin-right: 2em;
+  }
+
+  .posts-list .dt-tags {
+    display: block;
+    line-height: 1em;
+  }
+
+  .posts-list .dt-tags .dt-tag {
+    display: inline-block;
+    color: rgba(0,0,0,0.6);
+    padding: 0.3em 0.4em;
+    margin-right: 0.2em;
+    margin-bottom: 0.4em;
+    font-size: 60%;
+    border: 1px solid rgba(0,0,0,0.2);
+    border-radius: 3px;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  .posts-list img {
+    opacity: 1;
+  }
+
+  .posts-list img[data-src] {
+    opacity: 0;
+  }
+
+  .posts-more {
+    clear: both;
+  }
+
+
+  .posts-sidebar {
+    font-size: 16px;
+  }
+
+  .posts-sidebar h3 {
+    font-size: 16px;
+    margin-top: 0;
+    margin-bottom: 0.5em;
+    font-weight: 400;
+    text-transform: uppercase;
+  }
+
+  .sidebar-section {
+    margin-bottom: 30px;
+  }
+
+  .categories ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .categories li {
+    color: rgba(0, 0, 0, 0.8);
+    margin-bottom: 0;
+  }
+
+  .categories li>a {
+    border-bottom: none;
+  }
+
+  .categories li>a:hover {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.4);
+  }
+
+  .categories .active {
+    font-weight: 600;
+  }
+
+  .categories .category-count {
+    color: rgba(0, 0, 0, 0.4);
+  }
+
+
+  @media(min-width: 768px) {
+    .posts-list .post-preview h2 {
+      font-size: 26px;
+    }
+    .posts-list .post-preview .thumbnail {
+      float: right;
+      width: 30%;
+      margin-bottom: 0;
+    }
+    .posts-list .post-preview .description {
+      float: left;
+      width: 45%;
+    }
+    .posts-list .post-preview .metadata {
+      float: left;
+      width: 20%;
+      margin-top: 8px;
+    }
+    .posts-list .post-preview p {
+      margin: 0 0 12px 0;
+      line-height: 1.5em;
+      font-size: 16px;
+    }
+    .posts-with-sidebar .posts-list {
+      float: left;
+      width: 75%;
+    }
+    .posts-with-sidebar .posts-sidebar {
+      float: right;
+      width: 20%;
+      margin-top: 60px;
+      padding-top: 24px;
+      padding-bottom: 24px;
+    }
+  }
+
+
+  /* Improve display for browsers without grid (IE/Edge <= 15) */
+
+  .downlevel {
+    line-height: 1.6em;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", Arial, sans-serif;
+    margin: 0;
+  }
+
+  .downlevel .d-title {
+    padding-top: 6rem;
+    padding-bottom: 1.5rem;
+  }
+
+  .downlevel .d-title h1 {
+    font-size: 50px;
+    font-weight: 700;
+    line-height: 1.1em;
+    margin: 0 0 0.5rem;
+  }
+
+  .downlevel .d-title p {
+    font-weight: 300;
+    font-size: 1.2rem;
+    line-height: 1.55em;
+    margin-top: 0;
+  }
+
+  .downlevel .d-byline {
+    padding-top: 0.8em;
+    padding-bottom: 0.8em;
+    font-size: 0.8rem;
+    line-height: 1.8em;
+  }
+
+  .downlevel .section-separator {
+    border: none;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  .downlevel .d-article {
+    font-size: 1.06rem;
+    line-height: 1.7em;
+    padding-top: 1rem;
+    padding-bottom: 2rem;
+  }
+
+
+  .downlevel .d-appendix {
+    padding-left: 0;
+    padding-right: 0;
+    max-width: none;
+    font-size: 0.8em;
+    line-height: 1.7em;
+    margin-bottom: 0;
+    color: rgba(0,0,0,0.5);
+    padding-top: 40px;
+    padding-bottom: 48px;
+  }
+
+  .downlevel .footnotes ol {
+    padding-left: 13px;
+  }
+
+  .downlevel .base-grid,
+  .downlevel .distill-header,
+  .downlevel .d-title,
+  .downlevel .d-abstract,
+  .downlevel .d-article,
+  .downlevel .d-appendix,
+  .downlevel .distill-appendix,
+  .downlevel .d-byline,
+  .downlevel .d-footnote-list,
+  .downlevel .d-citation-list,
+  .downlevel .distill-footer,
+  .downlevel .appendix-bottom,
+  .downlevel .posts-container {
+    padding-left: 40px;
+    padding-right: 40px;
+  }
+
+  @media(min-width: 768px) {
+    .downlevel .base-grid,
+    .downlevel .distill-header,
+    .downlevel .d-title,
+    .downlevel .d-abstract,
+    .downlevel .d-article,
+    .downlevel .d-appendix,
+    .downlevel .distill-appendix,
+    .downlevel .d-byline,
+    .downlevel .d-footnote-list,
+    .downlevel .d-citation-list,
+    .downlevel .distill-footer,
+    .downlevel .appendix-bottom,
+    .downlevel .posts-container {
+    padding-left: 150px;
+    padding-right: 150px;
+    max-width: 900px;
+  }
+  }
+
+  .downlevel pre code {
+    display: block;
+    border-left: 2px solid rgba(0, 0, 0, .1);
+    padding: 0 0 0 20px;
+    font-size: 14px;
+  }
+
+  .downlevel code, .downlevel pre {
+    color: black;
+    background: none;
+    font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+    text-align: left;
+    white-space: pre;
+    word-spacing: normal;
+    word-break: normal;
+    word-wrap: normal;
+    line-height: 1.5;
+
+    -moz-tab-size: 4;
+    -o-tab-size: 4;
+    tab-size: 4;
+
+    -webkit-hyphens: none;
+    -moz-hyphens: none;
+    -ms-hyphens: none;
+    hyphens: none;
+  }
+
+  .downlevel .posts-list .post-preview {
+    color: inherit;
+  }
+
+
+
+  </style>
+
+  <script type="application/javascript">
+
+  function is_downlevel_browser() {
+    if (bowser.isUnsupportedBrowser({ msie: "12", msedge: "16"},
+                                   window.navigator.userAgent)) {
+      return true;
+    } else {
+      return window.load_distill_framework === undefined;
+    }
+  }
+
+  // show body when load is complete
+  function on_load_complete() {
+
+    // add anchors
+    if (window.anchors) {
+      window.anchors.options.placement = 'left';
+      window.anchors.add('d-article > h2, d-article > h3, d-article > h4, d-article > h5');
+    }
+
+
+    // set body to visible
+    document.body.style.visibility = 'visible';
+
+    // force redraw for leaflet widgets
+    if (window.HTMLWidgets) {
+      var maps = window.HTMLWidgets.findAll(".leaflet");
+      $.each(maps, function(i, el) {
+        var map = this.getMap();
+        map.invalidateSize();
+        map.eachLayer(function(layer) {
+          if (layer instanceof L.TileLayer)
+            layer.redraw();
+        });
+      });
+    }
+
+    // trigger 'shown' so htmlwidgets resize
+    $('d-article').trigger('shown');
+  }
+
+  function init_distill() {
+
+    init_common();
+
+    // create front matter
+    var front_matter = $('<d-front-matter></d-front-matter>');
+    $('#distill-front-matter').wrap(front_matter);
+
+    // create d-title
+    $('.d-title').changeElementType('d-title');
+
+    // separator
+    var separator = '<hr class="section-separator" style="clear: both"/>';
+    // prepend separator above appendix
+    $('.d-byline').before(separator);
+    $('.d-article').before(separator);
+
+    // create d-byline
+    var byline = $('<d-byline></d-byline>');
+    $('.d-byline').replaceWith(byline);
+
+    // create d-article
+    var article = $('<d-article></d-article>');
+    $('.d-article').wrap(article).children().unwrap();
+
+    // move posts container into article
+    $('.posts-container').appendTo($('d-article'));
+
+    // create d-appendix
+    $('.d-appendix').changeElementType('d-appendix');
+
+    // flag indicating that we have appendix items
+    var appendix = $('.appendix-bottom').children('h3').length > 0;
+
+    // replace footnotes with <d-footnote>
+    $('.footnote-ref').each(function(i, val) {
+      appendix = true;
+      var href = $(this).attr('href');
+      var id = href.replace('#', '');
+      var fn = $('#' + id);
+      var fn_p = $('#' + id + '>p');
+      fn_p.find('.footnote-back').remove();
+      var text = fn_p.html();
+      var dtfn = $('<d-footnote></d-footnote>');
+      dtfn.html(text);
+      $(this).replaceWith(dtfn);
+    });
+    // remove footnotes
+    $('.footnotes').remove();
+
+    // move refs into #references-listing
+    $('#references-listing').replaceWith($('#refs'));
+
+    $('h1.appendix, h2.appendix').each(function(i, val) {
+      $(this).changeElementType('h3');
+    });
+    $('h3.appendix').each(function(i, val) {
+      var id = $(this).attr('id');
+      $('.d-contents a[href="#' + id + '"]').parent().remove();
+      appendix = true;
+      $(this).nextUntil($('h1, h2, h3')).addBack().appendTo($('d-appendix'));
+    });
+
+    // show d-appendix if we have appendix content
+    $("d-appendix").css('display', appendix ? 'grid' : 'none');
+
+    // localize layout chunks to just output
+    $('.layout-chunk').each(function(i, val) {
+
+      // capture layout
+      var layout = $(this).attr('data-layout');
+
+      // apply layout to markdown level block elements
+      var elements = $(this).children().not('details, div.sourceCode, pre, script');
+      elements.each(function(i, el) {
+        var layout_div = $('<div class="' + layout + '"></div>');
+        if (layout_div.hasClass('shaded')) {
+          var shaded_content = $('<div class="shaded-content"></div>');
+          $(this).wrap(shaded_content);
+          $(this).parent().wrap(layout_div);
+        } else {
+          $(this).wrap(layout_div);
+        }
+      });
+
+
+      // unwrap the layout-chunk div
+      $(this).children().unwrap();
+    });
+
+    // remove code block used to force  highlighting css
+    $('.distill-force-highlighting-css').parent().remove();
+
+    // remove empty line numbers inserted by pandoc when using a
+    // custom syntax highlighting theme, except when numbering line
+    // in code chunk
+    $('pre:not(.numberLines) code.sourceCode a:empty').remove();
+
+    // load distill framework
+    load_distill_framework();
+
+    // wait for window.distillRunlevel == 4 to do post processing
+    function distill_post_process() {
+
+      if (!window.distillRunlevel || window.distillRunlevel < 4)
+        return;
+
+      // hide author/affiliations entirely if we have no authors
+      var front_matter = JSON.parse($("#distill-front-matter").html());
+      var have_authors = front_matter.authors && front_matter.authors.length > 0;
+      if (!have_authors)
+        $('d-byline').addClass('hidden');
+
+      // article with toc class
+      $('.d-contents').parent().addClass('d-article-with-toc');
+
+      // strip links that point to #
+      $('.authors-affiliations').find('a[href="#"]').removeAttr('href');
+
+      // add orcid ids
+      $('.authors-affiliations').find('.author').each(function(i, el) {
+        var orcid_id = front_matter.authors[i].orcidID;
+        var author_name = front_matter.authors[i].author
+        if (orcid_id) {
+          var a = $('<a></a>');
+          a.attr('href', 'https://orcid.org/' + orcid_id);
+          var img = $('<img></img>');
+          img.addClass('orcid-id');
+          img.attr('alt', author_name ? 'ORCID ID for ' + author_name : 'ORCID ID');
+          img.attr('src','data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA2ZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDo1N0NEMjA4MDI1MjA2ODExOTk0QzkzNTEzRjZEQTg1NyIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDozM0NDOEJGNEZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDozM0NDOEJGM0ZGNTcxMUUxODdBOEVCODg2RjdCQ0QwOSIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ1M1IE1hY2ludG9zaCI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkZDN0YxMTc0MDcyMDY4MTE5NUZFRDc5MUM2MUUwNEREIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjU3Q0QyMDgwMjUyMDY4MTE5OTRDOTM1MTNGNkRBODU3Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+84NovQAAAR1JREFUeNpiZEADy85ZJgCpeCB2QJM6AMQLo4yOL0AWZETSqACk1gOxAQN+cAGIA4EGPQBxmJA0nwdpjjQ8xqArmczw5tMHXAaALDgP1QMxAGqzAAPxQACqh4ER6uf5MBlkm0X4EGayMfMw/Pr7Bd2gRBZogMFBrv01hisv5jLsv9nLAPIOMnjy8RDDyYctyAbFM2EJbRQw+aAWw/LzVgx7b+cwCHKqMhjJFCBLOzAR6+lXX84xnHjYyqAo5IUizkRCwIENQQckGSDGY4TVgAPEaraQr2a4/24bSuoExcJCfAEJihXkWDj3ZAKy9EJGaEo8T0QSxkjSwORsCAuDQCD+QILmD1A9kECEZgxDaEZhICIzGcIyEyOl2RkgwAAhkmC+eAm0TAAAAABJRU5ErkJggg==');
+          a.append(img);
+          $(this).append(a);
+        }
+      });
+
+      // hide elements of author/affiliations grid that have no value
+      function hide_byline_column(caption) {
+        $('d-byline').find('h3:contains("' + caption + '")').parent().css('visibility', 'hidden');
+      }
+
+      // affiliations
+      var have_affiliations = false;
+      for (var i = 0; i<front_matter.authors.length; ++i) {
+        var author = front_matter.authors[i];
+        if (author.affiliation !== "&nbsp;") {
+          have_affiliations = true;
+          break;
+        }
+      }
+      if (!have_affiliations)
+        $('d-byline').find('h3:contains("Affiliations")').css('visibility', 'hidden');
+
+      // published date
+      if (!front_matter.publishedDate)
+        hide_byline_column("Published");
+
+      // document object identifier
+      var doi = $('d-byline').find('h3:contains("DOI")');
+      var doi_p = doi.next().empty();
+      if (!front_matter.doi) {
+        // if we have a citation and valid citationText then link to that
+        if ($('#citation').length > 0 && front_matter.citationText) {
+          doi.html('Citation');
+          $('<a href="#citation"></a>')
+            .text(front_matter.citationText)
+            .appendTo(doi_p);
+        } else {
+          hide_byline_column("DOI");
+        }
+      } else {
+        $('<a></a>')
+           .attr('href', "https://doi.org/" + front_matter.doi)
+           .html(front_matter.doi)
+           .appendTo(doi_p);
+      }
+
+       // change plural form of authors/affiliations
+      if (front_matter.authors.length === 1) {
+        var grid = $('.authors-affiliations');
+        grid.children('h3:contains("Authors")').text('Author');
+        grid.children('h3:contains("Affiliations")').text('Affiliation');
+      }
+
+      // remove d-appendix and d-footnote-list local styles
+      $('d-appendix > style:first-child').remove();
+      $('d-footnote-list > style:first-child').remove();
+
+      // move appendix-bottom entries to the bottom
+      $('.appendix-bottom').appendTo('d-appendix').children().unwrap();
+      $('.appendix-bottom').remove();
+
+      // hoverable references
+      $('span.citation[data-cites]').each(function() {
+        const citeChild = $(this).children()[0]
+        // Do not process if @xyz has been used without escaping and without bibliography activated
+        // https://github.com/rstudio/distill/issues/466
+        if (citeChild === undefined) return true
+
+        if (citeChild.nodeName == "D-FOOTNOTE") {
+          var fn = citeChild
+          $(this).html(fn.shadowRoot.querySelector("sup"))
+          $(this).id = fn.id
+          fn.remove()
+        }
+        var refs = $(this).attr('data-cites').split(" ");
+        var refHtml = refs.map(function(ref) {
+          // Could use CSS.escape too here, we insure backward compatibility in navigator
+          return "<p>" + $('div[id="ref-' + ref + '"]').html() + "</p>";
+        }).join("\n");
+        window.tippy(this, {
+          allowHTML: true,
+          content: refHtml,
+          maxWidth: 500,
+          interactive: true,
+          interactiveBorder: 10,
+          theme: 'light-border',
+          placement: 'bottom-start'
+        });
+      });
+
+      // fix footnotes in tables (#411)
+      // replacing broken distill.pub feature
+      $('table d-footnote').each(function() {
+        // we replace internal showAtNode methode which is triggered when hovering a footnote
+        this.hoverBox.showAtNode = function(node) {
+          // ported from https://github.com/distillpub/template/pull/105/files
+          calcOffset = function(elem) {
+              let x = elem.offsetLeft;
+              let y = elem.offsetTop;
+              // Traverse upwards until an `absolute` element is found or `elem`
+              // becomes null.
+              while (elem = elem.offsetParent && elem.style.position != 'absolute') {
+                  x += elem.offsetLeft;
+                  y += elem.offsetTop;
+              }
+
+              return { left: x, top: y };
+          }
+          // https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/offsetTop
+          const bbox = node.getBoundingClientRect();
+          const offset = calcOffset(node);
+          this.show([offset.left + bbox.width, offset.top + bbox.height]);
+        }
+      })
+
+      // clear polling timer
+      clearInterval(tid);
+
+      // show body now that everything is ready
+      on_load_complete();
+    }
+
+    var tid = setInterval(distill_post_process, 50);
+    distill_post_process();
+
+  }
+
+  function init_downlevel() {
+
+    init_common();
+
+     // insert hr after d-title
+    $('.d-title').after($('<hr class="section-separator"/>'));
+
+    // check if we have authors
+    var front_matter = JSON.parse($("#distill-front-matter").html());
+    var have_authors = front_matter.authors && front_matter.authors.length > 0;
+
+    // manage byline/border
+    if (!have_authors)
+      $('.d-byline').remove();
+    $('.d-byline').after($('<hr class="section-separator"/>'));
+    $('.d-byline a').remove();
+
+    // remove toc
+    $('.d-contents').remove();
+
+    // move appendix elements
+    $('h1.appendix, h2.appendix').each(function(i, val) {
+      $(this).changeElementType('h3');
+    });
+    $('h3.appendix').each(function(i, val) {
+      $(this).nextUntil($('h1, h2, h3')).addBack().appendTo($('.d-appendix'));
+    });
+
+
+    // inject headers into references and footnotes
+    var refs_header = $('<h3></h3>');
+    refs_header.text('References');
+    $('#refs').prepend(refs_header);
+
+    var footnotes_header = $('<h3></h3');
+    footnotes_header.text('Footnotes');
+    $('.footnotes').children('hr').first().replaceWith(footnotes_header);
+
+    // move appendix-bottom entries to the bottom
+    $('.appendix-bottom').appendTo('.d-appendix').children().unwrap();
+    $('.appendix-bottom').remove();
+
+    // remove appendix if it's empty
+    if ($('.d-appendix').children().length === 0)
+      $('.d-appendix').remove();
+
+    // prepend separator above appendix
+    $('.d-appendix').before($('<hr class="section-separator" style="clear: both"/>'));
+
+    // trim code
+    $('pre>code').each(function(i, val) {
+      $(this).html($.trim($(this).html()));
+    });
+
+    // move posts-container right before article
+    $('.posts-container').insertBefore($('.d-article'));
+
+    $('body').addClass('downlevel');
+
+    on_load_complete();
+  }
+
+
+  function init_common() {
+
+    // jquery plugin to change element types
+    (function($) {
+      $.fn.changeElementType = function(newType) {
+        var attrs = {};
+
+        $.each(this[0].attributes, function(idx, attr) {
+          attrs[attr.nodeName] = attr.nodeValue;
+        });
+
+        this.replaceWith(function() {
+          return $("<" + newType + "/>", attrs).append($(this).contents());
+        });
+      };
+    })(jQuery);
+
+    // prevent underline for linked images
+    $('a > img').parent().css({'border-bottom' : 'none'});
+
+    // mark non-body figures created by knitr chunks as 100% width
+    $('.layout-chunk').each(function(i, val) {
+      var figures = $(this).find('img, .html-widget');
+      // ignore leaflet img layers (#106)
+      figures = figures.filter(':not(img[class*="leaflet"])')
+      if ($(this).attr('data-layout') !== "l-body") {
+        figures.css('width', '100%');
+      } else {
+        figures.css('max-width', '100%');
+        figures.filter("[width]").each(function(i, val) {
+          var fig = $(this);
+          fig.css('width', fig.attr('width') + 'px');
+        });
+
+      }
+    });
+
+    // auto-append index.html to post-preview links in file: protocol
+    // and in rstudio ide preview
+    $('.post-preview').each(function(i, val) {
+      if (window.location.protocol === "file:")
+        $(this).attr('href', $(this).attr('href') + "index.html");
+    });
+
+    // get rid of index.html references in header
+    if (window.location.protocol !== "file:") {
+      $('.distill-site-header a[href]').each(function(i,val) {
+        $(this).attr('href', $(this).attr('href').replace(/^index[.]html/, "./"));
+      });
+    }
+
+    // add class to pandoc style tables
+    $('tr.header').parent('thead').parent('table').addClass('pandoc-table');
+    $('.kable-table').children('table').addClass('pandoc-table');
+
+    // add figcaption style to table captions
+    $('caption').parent('table').addClass("figcaption");
+
+    // initialize posts list
+    if (window.init_posts_list)
+      window.init_posts_list();
+
+    // implmement disqus comment link
+    $('.disqus-comment-count').click(function() {
+      window.headroom_prevent_pin = true;
+      $('#disqus_thread').toggleClass('hidden');
+      if (!$('#disqus_thread').hasClass('hidden')) {
+        var offset = $(this).offset();
+        $(window).resize();
+        $('html, body').animate({
+          scrollTop: offset.top - 35
+        });
+      }
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    if (is_downlevel_browser())
+      init_downlevel();
+    else
+      window.addEventListener('WebComponentsReady', init_distill);
+  });
+
+  </script>
+
+  <!--/radix_placeholder_distill-->
+  <script src="debtkit_files/header-attrs-2.30/header-attrs.js"></script>
+  <script src="debtkit_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+  <script src="debtkit_files/popper-2.6.0/popper.min.js"></script>
+  <link href="debtkit_files/tippy-6.2.7/tippy.css" rel="stylesheet" />
+  <link href="debtkit_files/tippy-6.2.7/tippy-light-border.css" rel="stylesheet" />
+  <script src="debtkit_files/tippy-6.2.7/tippy.umd.min.js"></script>
+  <script src="debtkit_files/anchor-4.2.2/anchor.min.js"></script>
+  <script src="debtkit_files/bowser-1.9.3/bowser.min.js"></script>
+  <script src="debtkit_files/webcomponents-2.0.0/webcomponents.js"></script>
+  <script src="debtkit_files/distill-2.2.21/template.v2.js"></script>
+  <!--radix_placeholder_site_in_header-->
+  <!--/radix_placeholder_site_in_header-->
+  <script>
+    $(function() {
+      console.log("Starting...")
+
+      // Mathjax config (add automatic linebreaks when supported)
+      // MathJax = {
+      //    tex: {
+      //        inlineMath: [['$', '$'], ['\\(', '\\)']],
+      //        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+      //        tags: 'ams',
+      //        multline: true,
+      //    },
+      //    options: {
+      //        linebreaks: { automatic: true },
+      //    },
+      // };
+
+      // Always show Published - distill hides it if not set
+      function show_byline_column(caption) {
+        $('d-byline').find('h3:contains("' + caption + '")').parent().css('visibility', 'visible');
+      }
+
+      show_byline_column('Published')
+
+      // tweak function
+      var rmd_meta = JSON.parse($("#radix-rmarkdown-metadata").html());
+      function get_meta(name, meta) {
+        var ind = meta.attributes.names.value.findIndex((e) => e == name)
+        var val = meta.value[ind]
+        if (val.type != 'list') {
+          return val.value.toString()
+        }
+        return val
+      }
+
+      // tweak description
+      // Add clickable tags
+      const slug = get_meta('slug', rmd_meta)
+      const cite_url = get_meta('citation_url', rmd_meta)
+
+      var title = $("d-title").text
+
+      const buttons = $('<div class="dt-tags" style="grid-column: page;">')
+      buttons.append('<a href="#citation" class="dt-tag"><i class="fas fa-quote-left"></i> Cite</a>')
+      buttons.append('<a href="' + slug + '.pdf" class="dt-tag"><i class="fas fa-file-pdf"></i> PDF</a>')
+      buttons.append('<a href="' + slug + '.zip" class="dt-tag"><i class="fas fa-file-zipper"></i> Supplement</a>')
+
+      // adds Abstract: in front of the first <p> in the title section --
+      // unless it happens to be the subtitle (FIXME: this is a bad hack - can't distill do this?)
+      var tpar = $("d-title p:not(:empty)").filter(function() {
+        return !$(this).hasClass("subtitle");
+      }).first();
+      if (tpar) {
+        const abstract = $('<d-abstract>')
+        abstract.append('<b>Abstract:</b><br>')
+        abstract.append(tpar) // Move description to d-abstract
+        $("d-title p:empty").remove() // Remove empty paragraphs after title
+        abstract.append(buttons)
+        abstract.insertAfter($('d-title')) // Add abstract section after title */
+      }
+
+      // tweak by-line
+      var byline = $("d-byline div.byline")
+      ind = rmd_meta.attributes.names.value.findIndex((e) => e == "journal")
+      const journal = get_meta('journal', rmd_meta)
+      const volume = get_meta('volume', rmd_meta)
+      const issue = get_meta('issue', rmd_meta)
+      const jrtitle = get_meta('title', journal)
+      const year = ((jrtitle == "R News") ? 2000 : 2008) + parseInt(volume)
+      const firstpage = get_meta('firstpage', journal)
+      const lastpage = get_meta('lastpage', journal)
+      byline.append('<div class="rjournal grid">')
+      $('div.rjournal').append('<h3>Volume</h3>')
+      $('div.rjournal').append('<h3>Pages</h3>')
+      $('div.rjournal').append('<a class="volume" href="../../issues/'+year+'-'+issue+'">'+volume+'/'+issue+'</a>')
+      $('div.rjournal').append('<p class="pages">'+firstpage+' - '+lastpage+'</p>')
+
+      const received_date = new Date(get_meta('date_received', rmd_meta))
+      byline.find('h3:contains("Published")').parent().append('<h3>Received</h3><p>'+received_date.toLocaleDateString('en-US', {month: 'short'})+' '+received_date.getDate()+', '+received_date.getFullYear()+'</p>')
+
+    })
+  </script>
+
+  <style>
+      /*
+    .nav-dropdown-content .nav-dropdown-header {
+      text-transform: lowercase;
+    }
+    */
+
+    d-byline .byline {
+      grid-template-columns: 2fr 2fr 2fr 2fr;
+    }
+
+    d-byline .rjournal {
+      grid-column-end: span 2;
+      grid-template-columns: 1fr 1fr;
+      margin-bottom: 0;
+    }
+
+    d-title h1, d-title p, d-title figure,
+    d-abstract p, d-abstract b {
+      grid-column: page;
+    }
+
+    d-title .dt-tags {
+      grid-column: page;
+    }
+
+    .dt-tags .dt-tag {
+      text-transform: lowercase;
+    }
+
+    d-article h1 {
+      line-height: 1.1em;
+    }
+
+    d-abstract p, d-article p {
+      text-align: justify;
+    }
+
+    @media(min-width: 1000px) {
+      .d-contents.d-contents-float {
+        justify-self: end;
+      }
+
+      nav.toc {
+        border-right: 1px solid rgba(0, 0, 0, 0.1);
+        border-right-width: 1px;
+        border-right-style: solid;
+        border-right-color: rgba(0, 0, 0, 0.1);
+      }
+    }
+
+    .posts-list .dt-tags .dt-tag {
+      text-transform: lowercase;
+    }
+
+    @keyframes highlight-target {
+      0% {
+        background-color: #ffa;
+      }
+      66% {
+        background-color: #ffa;
+      }
+      100% {
+        background-color: none;
+      }
+    }
+
+    d-article :target, d-appendix :target {
+       animation: highlight-target 3s;
+    }
+
+    .header-section-number {
+      margin-right: 0.5em;
+    }
+    
+    d-appendix .citation-appendix,
+    .d-appendix .citation-appendix {
+      color: rgb(60, 60, 60);
+    }
+
+    d-article h2 {
+      border-bottom: 0px solid rgba(0, 0, 0, 0.1);
+      padding-bottom: 0rem;
+    }
+    d-article h3 {
+      font-size: 20px;
+    }
+    d-article h4 {
+      font-size: 18px;
+      text-transform: none;
+    }
+
+    @media (min-width: 1024px) {
+      d-article h2 {
+        font-size: 32px;
+      }
+      d-article h3 {
+        font-size: 24px;
+      }
+      d-article h4 {
+        font-size: 20px;
+      }
+    }
+  </style>
+
+
+</head>
+
+<body>
+
+<!--radix_placeholder_front_matter-->
+
+<script id="distill-front-matter" type="text/json">
+{"title":"Debtkit: Debt Sustainability Analysis and Fiscal Risk Assessment in R","description":"The debtkit package implements the standard debt sustainability analysis toolkit used by the International Monetary Fund, the European Commission, finance ministries, and central banks. It projects debt-to-GDP paths via the canonical debt dynamics equation; decomposes historical debt changes into interest, growth, primary balance, and stock-flow adjustment contributions; estimates fiscal reaction functions following Bohn (1998); produces stochastic fan charts via Monte Carlo simulation; runs the six standardised IMF stress tests; builds IMF-style heat maps and gross financing needs projections; and computes the European Commission S1 and S2 sustainability-gap indicators. Twelve exported functions share a uniform dk_ prefix and a data-frame-in, S3-object-out interface, with no dependencies beyond base R and cli. The package is available on CRAN.","authors":[{"author":"Charles Coverdale","authorURL":"https://github.com/charlescoverdale/debtkit","affiliation":"Independent","affiliationURL":"#","orcidID":""}],"publishedDate":"2026-04-19T00:00:00.000+01:00","citationText":"Coverdale, 2026"}
+</script>
+
+<!--/radix_placeholder_front_matter-->
+<!--radix_placeholder_navigation_before_body-->
+<!--/radix_placeholder_navigation_before_body-->
+<!--radix_placeholder_site_before_body-->
+<!--/radix_placeholder_site_before_body-->
+
+<div class="d-title">
+<h1>Debtkit: Debt Sustainability Analysis and Fiscal Risk Assessment in R</h1>
+
+<!--radix_placeholder_categories-->
+<!--/radix_placeholder_categories-->
+<p><p>The debtkit package implements the standard debt sustainability analysis toolkit used by the International Monetary Fund, the European Commission, finance ministries, and central banks. It projects debt-to-GDP paths via the canonical debt dynamics equation; decomposes historical debt changes into interest, growth, primary balance, and stock-flow adjustment contributions; estimates fiscal reaction functions following Bohn (1998); produces stochastic fan charts via Monte Carlo simulation; runs the six standardised IMF stress tests; builds IMF-style heat maps and gross financing needs projections; and computes the European Commission S1 and S2 sustainability-gap indicators. Twelve exported functions share a uniform dk_ prefix and a data-frame-in, S3-object-out interface, with no dependencies beyond base R and cli. The package is available on CRAN.</p></p>
+</div>
+
+<div class="d-byline">
+  Charles Coverdale <a href="https://github.com/charlescoverdale/debtkit" class="uri">https://github.com/charlescoverdale/debtkit</a> (Independent)
+  
+<br/>2026-04-19
+</div>
+
+<div class="d-article">
+<h2 data-number="1" id="introduction"><span class="header-section-number">1</span> Introduction</h2>
+<p>The <a href="https://cran.r-project.org/package=debtkit">debtkit</a> package implements the standard workflow for
+government debt sustainability analysis (DSA) in R. Twelve exported
+functions cover deterministic projections, historical
+decomposition, stochastic fan charts, IMF stress tests, Bohn (1998)
+fiscal reaction function estimation, IMF-style heat maps, gross
+financing needs, and European Commission S1 and S2
+sustainability-gap indicators. Every function shares a uniform
+prefix and operates on plain numeric vectors, with no
+dependency on any data-vendor package.</p>
+<p>Debt sustainability analysis has become a standard requirement for
+fiscal policy in advanced and emerging economies alike since the
+European sovereign debt crisis and, more recently, since the
+pandemic-era surge in public debt. The International Monetary
+Fund’s Sovereign Risk and Debt Sustainability Framework
+<span class="citation" data-cites="imf2022">(<a href="#ref-imf2022" role="doc-biblioref">International Monetary Fund 2022</a>)</span> asks members to assess near-term risk, medium-term
+debt dynamics, and long-term fiscal pressures under a standardised
+template. The European Commission’s Fiscal Sustainability Report
+applies the S1 and S2 indicators <span class="citation" data-cites="ec2024fsr">(<a href="#ref-ec2024fsr" role="doc-biblioref">European Commission 2024</a>)</span> to each Member State
+annually. Finance ministries running their own DSAs typically
+assemble the same building blocks from first principles.</p>
+<p>The R ecosystem has lacked a dedicated DSA package. Users have
+written bespoke code combining hand-rolled implementations of the
+IMF and EC methods. <a href="https://cran.r-project.org/package=debtkit">debtkit</a> consolidates these
+operations into a single tested package with the standard methods
+exposed through a clean interface.</p>
+<h2 data-number="2" id="background"><span class="header-section-number">2</span> Background</h2>
+<p><strong>The debt dynamics equation.</strong> <span class="citation" data-cites="blanchard1990">Blanchard (<a href="#ref-blanchard1990" role="doc-biblioref">1990</a>)</span> expresses the law
+of motion for the debt-to-GDP ratio as
+<span class="math display">\[d_{t+1} = \frac{1 + r_{t+1}}{1 + g_{t+1}} d_t - pb_{t+1} + sfa_{t+1},\]</span>
+where <span class="math inline">\(d_t\)</span> is the debt ratio, <span class="math inline">\(r\)</span> the effective nominal interest
+rate, <span class="math inline">\(g\)</span> the nominal GDP growth rate, <span class="math inline">\(pb\)</span> the primary balance,
+and <span class="math inline">\(sfa\)</span> the stock-flow adjustment (valuation effects,
+privatisation receipts, below-the-line operations). When <span class="math inline">\(r &lt; g\)</span>,
+debt dynamics favour the fiscal authority: even a primary deficit
+is consistent with a falling debt ratio. When <span class="math inline">\(r &gt; g\)</span>, the
+interest-growth differential is a headwind that must be offset by
+primary surpluses.</p>
+<p><strong>Historical decomposition.</strong> Any observed path of debt can be
+decomposed ex post into contributions from the interest effect,
+the growth effect, the primary balance, and the stock-flow
+adjustment. The decomposition is exact up to the stock-flow
+adjustment residual. The IMF and European Commission report this
+decomposition as a standard diagnostic.</p>
+<p><strong>Fiscal reaction functions.</strong> <span class="citation" data-cites="bohn1998">Bohn (<a href="#ref-bohn1998" role="doc-biblioref">1998</a>)</span> shows that a sufficient
+condition for long-run solvency is that the primary balance
+responds positively to the lagged debt ratio: a government running
+a higher debt must, on average, run a higher primary surplus. The
+statistical test is a regression <span class="math inline">\(pb_t = \alpha + \beta d_{t-1} +
+\gamma&#39; X_t + \varepsilon_t\)</span>, where the null of unsustainability is
+<span class="math inline">\(\beta \leq 0\)</span>. <span class="citation" data-cites="mendoza2008international">Mendoza and Ostry (<a href="#ref-mendoza2008international" role="doc-biblioref">2008</a>)</span> extend the test to a
+cross-country panel and document a positive <span class="math inline">\(\beta\)</span> in most
+advanced economies.</p>
+<p><strong>Stochastic fan charts.</strong> Deterministic projections are a useful
+central case, but the policy question is typically about risk:
+what is the chance that debt exceeds some threshold over a
+five-to-ten-year horizon? <span class="citation" data-cites="celasun2006primary">Celasun et al. (<a href="#ref-celasun2006primary" role="doc-biblioref">2006</a>)</span> introduced the
+stochastic debt fan chart, which simulates thousands of debt paths
+under an estimated joint distribution of macroeconomic shocks, and
+reports debt-at-risk quantiles. The IMF DSA template and the
+European Commission Fiscal Sustainability Report both include a
+stochastic fan chart.</p>
+<p><strong>Stress tests.</strong> The IMF standardised DSA stress tests
+<span class="citation" data-cites="imf2013 imf2022">(<a href="#ref-imf2013" role="doc-biblioref">International Monetary Fund 2013</a>, <a href="#ref-imf2022" role="doc-biblioref">2022</a>)</span> subject the baseline to six shocks: a
+growth shock, an interest-rate shock, a primary-balance shock, a
+combined macro shock, an exchange-rate shock (for countries with
+foreign-currency debt), and a contingent-liability realisation.
+Each shock produces an alternative debt path, and the IMF heat
+map colour-codes the resulting risk levels.</p>
+<p><strong>Sustainability gaps.</strong> The European Commission’s S1 indicator
+reports the permanent increase in the structural primary balance
+required to reach a 60 per cent debt-to-GDP ratio by a target
+horizon. The S2 indicator is the permanent adjustment required to
+satisfy the intertemporal budget constraint, accounting for the
+present value of projected ageing costs. Both are the EC’s
+summary measures of fiscal sustainability risk.</p>
+<h2 data-number="3" id="package-design"><span class="header-section-number">3</span> Package design</h2>
+<h3 data-number="3.1" id="architecture"><span class="header-section-number">3.1</span> Architecture</h3>
+<p><a href="https://cran.r-project.org/package=debtkit">debtkit</a> is pure R with no compiled code. Runtime imports
+are <a href="https://cran.r-project.org/package=cli">cli</a>, <code>grDevices</code>, <code>graphics</code>, and <code>stats</code>. R 4.1.0
+or later is required. The test suite contains over one hundred
+tests covering every exported function.</p>
+<h3 data-number="3.2" id="uniform-function-interface"><span class="header-section-number">3.2</span> Uniform function interface</h3>
+<p>Every exported function is prefixed . Modelling
+functions accept numeric vectors of debt, interest rates, GDP
+growth, and primary balance, all as decimals (so 5 per cent is
+0.05). The core modelling quartet is ,
+, , and
+. Diagnostic functions accept the derived
+quantities: ,
+, and . Helpers
+wrap or generate the inputs: ,
+, , and
+.</p>
+<h3 data-number="3.3" id="s3-classes-and-methods"><span class="header-section-number">3.3</span> S3 classes and methods</h3>
+<p>Each function returns an S3 object with a method.
+The main classes are ,
+, , and . The
+diagnostic classes are , ,
+, , and
+. Where geometric intuition matters, a
+method is provided. takes a
+list of projections and produces a side-by-side comparison.</p>
+<h3 data-number="3.4" id="reproducibility"><span class="header-section-number">3.4</span> Reproducibility</h3>
+<p>All numerical results are deterministic given the input. The only
+stochastic element is Monte Carlo simulation in
+and the bootstrap option in
+; both accept a argument
+for reproducibility. The package ships a synthetic
+dataset used in examples. Real-data
+applications use fiscal series from authoritative sources: FRED,
+World Bank Development Indicators, OECD, or national statistical
+offices.</p>
+<h2 data-number="4" id="deterministic-projections-and-historical-decomposition"><span class="header-section-number">4</span> Deterministic projections and historical decomposition</h2>
+<p> projects a debt path forward
+under constant (or time-varying) assumptions. It returns a debt
+path, an annual contribution decomposition, and a metadata record.
+returns the interest-rate-growth differential
+<span class="math inline">\((r-g)/(1+g)\)</span> and the debt-stabilising primary balance.</p>
+<p> decomposes the observed path into four
+contributions: interest, growth, primary balance, and stock-flow
+adjustment. Figure <a href="#fig:decompose">1</a> shows the decomposition
+for the United States over 2004 to 2023, using Federal Reserve
+Bank of St. Louis Economic Data (FRED) series for debt held by
+the public (), the federal budget balance
+() adjusted by interest outlays to recover the
+primary balance, the ten-year Treasury yield as the effective
+rate, and BEA GDP for the growth series.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:decompose"></span>
+<embed src="figures/fig1_decompose.pdf" title="A stacked column chart of annual contributions to the change in the US federal debt-to-GDP ratio from 2004 to 2023. Each year has four coloured bars: interest (red), growth (green, usually negative), primary deficit (orange), and stock-flow adjustment (grey). Black dots mark the total observed annual change in the debt ratio. Two periods stand out: 2008 to 2010 shows large positive interest and primary-deficit contributions, and 2020 shows the largest single-year jump, dominated by a very large positive orange bar." width="100%" type="application/pdf" />
+<p class="caption">
+Figure 1: Annual contributions to the change in US federal debt/GDP, 2004 to 2023. Components: interest effect (red), growth effect (green, negative), primary deficit (orange, plotted positive so that a deficit adds to debt), stock-flow adjustment (grey). Dots mark the observed annual change in the debt ratio. The global financial crisis (2008 to 2010) shows a large positive interest and primary-deficit contribution. The 2020 pandemic year shows the largest single-year jump, driven by primary-deficit contribution. Source: FRED , , , and .
+</p>
+</div>
+</div>
+<h2 data-number="5" id="cross-country-debt-trajectories"><span class="header-section-number">5</span> Cross-country debt trajectories</h2>
+<p>The debt-to-GDP ratio is the single most-watched fiscal indicator
+in the advanced-economy policy debate. Figure
+<a href="#fig:cross-country">2</a> plots FRED-sourced gross government debt
+series for three advanced economies, 1990 to 2023: Japan, the
+United States, and the United Kingdom. Japan sits in a different
+regime to the Anglo-Saxon pair, tracking above 200 per cent of GDP
+since the mid-2010s without a sovereign funding crisis; the United
+States and the United Kingdom each moved from roughly 40 per cent
+in the early 1990s to roughly 100 per cent by the early 2020s. The
+2008 financial crisis and the 2020 pandemic are each visible as
+level shifts.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:cross-country"></span>
+<embed src="figures/fig2_cross_country.pdf" title="A line chart showing three time series of gross government debt as a percentage of GDP from 1990 to 2023 for Japan, the United States, and the United Kingdom. Japan rises from about 60 per cent in 1990 to roughly 240 per cent by the early 2020s and stays well above the other two countries throughout. The United States and the United Kingdom both start near 30 to 40 per cent in 1990 and rise gradually, with level jumps after 2008 and 2020, ending close to 100 to 120 per cent of GDP." width="100%" type="application/pdf" />
+<p class="caption">
+Figure 2: Gross government debt, percentage of GDP, 1990 to 2023. Data: FRED series (United States, aggregated to annual), (United Kingdom), (Japan). Japan reached roughly 240 per cent of GDP by 2022 and remains the outlier. The United Kingdom and the United States converged to roughly 100 per cent of GDP after the 2020 pandemic from starting points near 40 per cent in 1990.
+</p>
+</div>
+</div>
+<h2 data-number="6" id="stochastic-fan-charts"><span class="header-section-number">6</span> Stochastic fan charts</h2>
+<p> fits a vector autoregression or
+bootstrap resampler to historical residuals of growth, interest
+rate, and primary balance, returning the estimated innovation
+distribution. then simulates debt paths
+under repeated draws from that distribution and returns quantiles
+at user-specified confidence levels.</p>
+<p>Figure <a href="#fig:fan">3</a> shows a ten-year fan chart for the US
+federal debt ratio starting from the 2023 end-of-sample
+observation, simulating two thousand paths using shocks estimated
+by first-order VAR on the 2004 to 2023 panel. The fan widens
+rapidly over the horizon, reflecting the accumulation of variance
+over time, and the median (central blue line) diverges from the
+baseline (red dashed) that holds macro conditions fixed at their
+2023 levels.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:fan"></span>
+<embed src="figures/fig3_fan.pdf" title="A fan chart projecting US federal debt held by the public from 2023 to 2033. A dark blue solid line traces the simulation median, rising gently over time. A red dashed line marks the deterministic baseline. Two concentric shaded blue bands show the 50 per cent and 80 per cent uncertainty intervals, widening steadily from 2023 onward to span a broad range by 2033." width="100%" type="application/pdf" />
+<p class="caption">
+Figure 3: Stochastic fan chart for US federal debt held by the public, 2023 to 2033, 2000 Monte Carlo simulations. The shaded bands show simulation quantiles: the inner band is the 50 per cent interval (25th to 75th percentile), the outer band the 80 per cent interval (10th to 90th). The solid blue line is the simulation median; the red dashed line is the deterministic baseline that holds macro conditions fixed at their 2023 values. Shocks are drawn from a first-order VAR fitted to 2004 to 2023 residuals on growth, interest rate, and primary balance.
+</p>
+</div>
+</div>
+<h2 data-number="7" id="stress-tests-and-fiscal-reaction-functions"><span class="header-section-number">7</span> Stress tests and fiscal reaction functions</h2>
+<p> runs the six standardised IMF DSA stress
+tests: a growth shock, an interest-rate shock, a primary-balance
+shock, a combined macro shock, an exchange-rate shock, and a
+contingent-liability shock. Each scenario returns a debt path.
+Figure <a href="#fig:stress">4</a> overlays the paths for the US baseline
+with each stress applied.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:stress"></span>
+<embed src="figures/fig4_stress.pdf" title="A line chart showing seven five-year debt-to-GDP projections starting from 2023. A thick grey baseline rises modestly over five years. Six coloured scenario lines diverge from the baseline: the interest-rate shock climbs the fastest and sits well above the baseline by year five, the combined macro and contingent-liability shocks also rise well above baseline, the growth and primary-balance shocks sit moderately above, and the exchange-rate line tracks the baseline closely because US debt is dollar denominated." width="100%" type="application/pdf" />
+<p class="caption">
+Figure 4: US federal debt/GDP under IMF standardised stress tests, five-year horizon from 2023. Baseline (grey) plus six alternatives: a one percentage-point growth shock, a two percentage-point interest shock, a one percentage-point primary-balance shock, a combined macro shock, an exchange-rate shock (US dollar debt, so effectively no impact), and a contingent-liability realisation. The interest shock is the most adverse single scenario for an advanced economy with rising near-term refinancing needs.
+</p>
+</div>
+</div>
+<p> estimates the fiscal reaction function
+<span class="math inline">\(pb_t = \alpha + \beta d_{t-1} + \varepsilon_t\)</span> with optional
+Newey-West HAC standard errors. Figure <a href="#fig:bohn">5</a> shows the
+raw scatter plus the OLS fit for the US 2004 to 2023 sample. The
+estimated slope is positive but small and statistically imprecise
+on this short sample, consistent with the post-2008 breakdown of
+the pre-crisis fiscal-reaction relationship documented in
+<span class="citation" data-cites="ghosh2013fiscal">Ghosh et al. (<a href="#ref-ghosh2013fiscal" role="doc-biblioref">2013</a>)</span>.</p>
+<div class="layout-chunk" data-layout="l-body">
+<div class="figure" style="text-align: center"><span style="display:block;" id="fig:bohn"></span>
+<embed src="figures/fig5_bohn.pdf" title="A scatter plot with lagged debt-to-GDP on the horizontal axis and the primary balance on the vertical axis, for US annual observations from 2004 to 2023. Points are coloured on a blue-to-red gradient by year. A red regression line slopes gently upward across the cloud, consistent with a positive but modest reaction coefficient. A horizontal dashed line marks zero primary balance, with most points sitting below it and two very low outliers corresponding to 2009 and 2020." width="100%" type="application/pdf" />
+<p class="caption">
+Figure 5: Bohn (1998) fiscal reaction function, US 2004 to 2023. Points are annual observations, coloured by year (blue 2004, red 2023). Red line: OLS fit with Newey-West standard errors. Dashed line at zero primary balance. The positive slope is consistent with a sustainable fiscal reaction function, but the 2004 to 2023 sample includes two large unprecedented shocks (the 2008 crisis and the 2020 pandemic) that widen the confidence interval around the slope estimate.
+</p>
+</div>
+</div>
+<h2 data-number="8" id="heat-maps-financing-needs-and-sustainability-gaps"><span class="header-section-number">8</span> Heat maps, financing needs, and sustainability gaps</h2>
+<p> returns an IMF-style heat-map risk
+assessment, classifying the current debt ratio, the recent change,
+the gross financing need, the external share, and the
+interest-growth differential into low, medium, and high risk
+categories with colour coding aligned to IMF practice.</p>
+<p> projects gross financing needs, which are the sum
+of rolled-over principal, new primary deficits, and interest
+payments, as a share of GDP. Arguments are ,
+, , ,
+and . IMF thresholds flag GFN above 15 per cent as a
+near-term risk for advanced economies and above 20 per cent for
+emerging economies.</p>
+<p> returns the S1 and S2 indicators,
+taking , , ,
+, , and as
+arguments. S1 is the permanent primary-balance adjustment needed
+to reach a target debt ratio by a specified horizon. S2 is the
+permanent adjustment needed to satisfy the intertemporal budget
+constraint given projected ageing costs.</p>
+<h2 data-number="9" id="replication"><span class="header-section-number">9</span> Replication</h2>
+<p>The canonical workflow is five lines:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span> <span class="fu">dk_sample_data</span>()</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>decomp <span class="ot">&lt;-</span> <span class="fu">dk_decompose</span>(d<span class="sc">$</span>debt, d<span class="sc">$</span>interest_rate, d<span class="sc">$</span>gdp_growth,</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>                        d<span class="sc">$</span>primary_balance, <span class="at">years =</span> d<span class="sc">$</span>years)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>shocks <span class="ot">&lt;-</span> <span class="fu">dk_estimate_shocks</span>(d<span class="sc">$</span>gdp_growth, d<span class="sc">$</span>interest_rate,</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>                              d<span class="sc">$</span>primary_balance)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>fan <span class="ot">&lt;-</span> <span class="fu">dk_fan_chart</span>(d<span class="sc">$</span>debt[<span class="fu">length</span>(d<span class="sc">$</span>debt)], <span class="fl">0.04</span>, <span class="fl">0.03</span>, <span class="sc">-</span><span class="fl">0.01</span>,</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>                     <span class="at">shocks =</span> shocks, <span class="at">n_sim =</span> <span class="dv">1000</span>, <span class="at">horizon =</span> <span class="dv">10</span>,</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>                     <span class="at">seed =</span> <span class="dv">42</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>stress <span class="ot">&lt;-</span> <span class="fu">dk_stress_test</span>(d<span class="sc">$</span>debt[<span class="fu">length</span>(d<span class="sc">$</span>debt)], <span class="fl">0.04</span>, <span class="fl">0.03</span>, <span class="sc">-</span><span class="fl">0.01</span>)</span></code></pre></div>
+<p>Line one loads a synthetic but realistic annual panel. Line two
+decomposes historical debt changes into the standard four
+contributions. Line three estimates the shock distribution. Line
+four produces the stochastic fan chart. Line five runs the six
+IMF stress tests. Table <a href="#tab:debt-panel">1</a> lists the
+cross-country summary used in the replication.</p>
+<div class="layout-chunk" data-layout="l-body">
+<table>
+<caption><span id="tab:debt-panel">Table 1: </span>Central government debt, two advanced economies: first and latest observations plus peak. Data: World Bank . The United Kingdom and the United States rose from roughly 30 to 40 per cent in 1990 to above 100 per cent by 2024.</caption>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 22%" />
+<col style="width: 24%" />
+<col style="width: 18%" />
+<col style="width: 13%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Country</th>
+<th style="text-align: left;">Debt/GDP (first)</th>
+<th style="text-align: left;">Debt/GDP (latest)</th>
+<th style="text-align: left;">Peak (year)</th>
+<th style="text-align: left;">Change</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">United States</td>
+<td style="text-align: left;">40.9% (1990)</td>
+<td style="text-align: left;">118.0% (2024)</td>
+<td style="text-align: left;">126.4% (2020)</td>
+<td style="text-align: left;">+77.0 pp</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">United Kingdom</td>
+<td style="text-align: left;">30.2% (1990)</td>
+<td style="text-align: left;">131.1% (2024)</td>
+<td style="text-align: left;">194.7% (2020)</td>
+<td style="text-align: left;">+100.9 pp</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h2 data-number="10" id="a-case-study-of-post-pandemic-debt-dynamics"><span class="header-section-number">10</span> A case study of post-pandemic debt dynamics</h2>
+<p>The most-watched fiscal question in US macroeconomic policy since
+2020 has been whether the federal debt ratio, which jumped from 79
+per cent of GDP at end-2019 to 100 per cent by end-2021, is on a
+sustainable trajectory <span class="citation" data-cites="blanchard2022fiscal furman2023weworry">(<a href="#ref-blanchard2022fiscal" role="doc-biblioref">Blanchard 2022</a>; <a href="#ref-furman2023weworry" role="doc-biblioref">Furman and Summers 2023</a>)</span>. The <a href="https://cran.r-project.org/package=debtkit">debtkit</a> pipeline produces a
+compact answer in three steps.</p>
+<p>First, the historical decomposition (Figure <a href="#fig:decompose">1</a>)
+shows that the 2020 spike was driven almost entirely by the
+primary deficit: the CARES Act and related pandemic relief
+produced a primary deficit of around 12 per cent of GDP against a
+typical post-crisis primary deficit of 3 to 5 per cent. The
+interest and growth effects netted out close to zero because the
+Federal Reserve held rates near the zero lower bound throughout
+2020.</p>
+<p>Second, the fan chart (Figure <a href="#fig:fan">3</a>) projects the debt
+ratio forward ten years from 2023, incorporating the correlation
+structure of shocks to growth, interest rates, and the primary
+balance estimated by first-order VAR on the 2004 to 2023 panel.
+The 80 per cent confidence band spans a wide range: the optimistic
+tail reaches below the 2023 level, the pessimistic tail moves
+materially higher.</p>
+<p>Third, the stress-test grid (Figure <a href="#fig:stress">4</a>) shows that
+the interest-rate shock dominates for a country with the US debt
+structure: a two percentage-point increase in the effective rate
+produces the largest upward divergence from the baseline.
+Combining the three diagnostics, the package reproduces the main
+qualitative conclusion of <span class="citation" data-cites="blanchard2022fiscal">Blanchard (<a href="#ref-blanchard2022fiscal" role="doc-biblioref">2022</a>)</span>: at current
+interest-growth differentials the US debt ratio is manageable, but
+the margin is narrow and sensitive to rate assumptions.</p>
+<h2 data-number="11" id="limitations"><span class="header-section-number">11</span> Limitations</h2>
+<p>Five limitations apply.</p>
+<ol type="1">
+<li><a href="https://cran.r-project.org/package=debtkit">debtkit</a> operates on annual data. Quarterly DSA is
+possible by passing quarterly rates, but the IMF and EC
+templates are annual and the stress-test calibrations assume
+annual units.</li>
+<li>The stochastic fan chart uses a first-order VAR or bootstrap
+resampling. Regime-switching, time-varying-parameter, or
+stochastic-volatility shock models of the kind <span class="citation" data-cites="stock2007why">Stock and Watson (<a href="#ref-stock2007why" role="doc-biblioref">2007</a>)</span>
+use for inflation are out of scope.</li>
+<li>The S2 indicator requires a trajectory of projected ageing
+costs, which the package does not produce. Users should source
+the EC Ageing Report or OECD long-term projections.</li>
+<li>Contingent liabilities are treated as a single shock in
+. Granular contingent-liability
+modelling (guarantee-call probabilities, state-owned enterprise
+exposures) is beyond the standardised template and is not
+implemented.</li>
+<li>Foreign-currency debt is handled via an exchange-rate shock
+argument. Pass-through, hedging, and natural-hedging effects
+are not modelled.</li>
+</ol>
+<h2 data-number="12" id="appendix-of-formula-definitions"><span class="header-section-number">12</span> Appendix of formula definitions</h2>
+<p><strong>Debt dynamics equation.</strong> For debt ratio <span class="math inline">\(d_t\)</span>, effective
+interest rate <span class="math inline">\(r_t\)</span>, nominal GDP growth <span class="math inline">\(g_t\)</span>, primary balance
+<span class="math inline">\(pb_t\)</span>, and stock-flow adjustment <span class="math inline">\(sfa_t\)</span>:
+<span class="math display">\[d_{t+1} = \frac{1 + r_{t+1}}{1 + g_{t+1}} d_t - pb_{t+1} + sfa_{t+1}.\]</span></p>
+<p><strong>Debt-stabilising primary balance.</strong> Given <span class="math inline">\(r\)</span> and <span class="math inline">\(g\)</span>, the
+primary balance that keeps <span class="math inline">\(d\)</span> constant is
+<span class="math display">\[pb^* = \frac{r - g}{1 + g} d.\]</span></p>
+<p><strong>Bohn (1998) fiscal reaction function.</strong> The test for fiscal
+sustainability is the sign of <span class="math inline">\(\beta\)</span> in
+<span class="math display">\[pb_t = \alpha + \beta\, d_{t-1} + \gamma&#39; X_t + \varepsilon_t,\]</span>
+estimated by ordinary least squares with Newey-West standard
+errors. A positive, statistically significant <span class="math inline">\(\beta\)</span> is a
+sufficient condition for long-run solvency.</p>
+<p><strong>EC S1 sustainability gap.</strong> Permanent adjustment to the
+structural primary balance required to hit a target debt ratio
+<span class="math inline">\(\bar{d}\)</span> by horizon <span class="math inline">\(T\)</span>:
+<span class="math display">\[S_1 = \frac{\bar{d} - d_0 \cdot \prod_{t=1}^{T} (1+r_t)/(1+g_t)}{\sum_{t=1}^{T}\prod_{s=t+1}^{T}(1+r_s)/(1+g_s)} - pb_0.\]</span></p>
+<p><strong>EC S2 sustainability gap.</strong> Permanent adjustment required to
+satisfy the intertemporal budget constraint given a projected
+trajectory of ageing costs <span class="math inline">\(\Delta age_t\)</span>:
+<span class="math display">\[S_2 = (r - g)\, d_0 - pb_0 + \sum_{t=1}^{\infty} e^{-(r-g)t} \Delta age_t.\]</span></p>
+<h2 data-number="13" id="conclusion"><span class="header-section-number">13</span> Conclusion</h2>
+<p>Debt sustainability analysis is a core activity at every finance
+ministry, central bank, and international financial institution,
+and had been underserved on CRAN. <a href="https://cran.r-project.org/package=debtkit">debtkit</a> provides a
+complete DSA workflow in twelve functions: deterministic
+projection, historical decomposition, fiscal-reaction-function
+estimation, stochastic fan charts, IMF stress tests, heat maps,
+gross financing needs, and EC S1 and S2 sustainability gaps. The
+package is pure R, has no data dependencies, and returns S3
+objects with print and plot methods. Planned additions include
+quarterly-frequency support, regime-switching shock models for the
+fan chart, and bundled OECD Ageing Report ageing-cost series to
+make the S2 indicator turnkey.</p>
+<h2 class="unnumbered" id="acknowledgements">Acknowledgements</h2>
+<p>The Federal Reserve Bank of St. Louis Economic Data service and
+the World Bank Development Indicators provide the real-data series
+used in every figure in this paper under open-data licences.
+Olivier Blanchard, Henning Bohn, Paolo Mauro, and the IMF Fiscal
+Affairs Department developed the DSA methodology that the package
+implements.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+<h3 class="appendix" data-number="13.1" id="cran-packages-used"><span class="header-section-number">13.1</span> CRAN packages used</h3>
+<p><a href="https://cran.r-project.org/package=debtkit">debtkit</a>, <a href="https://cran.r-project.org/package=cli">cli</a></p>
+<h3 class="appendix" data-number="13.2" id="cran-task-views-implied-by-cited-packages"><span class="header-section-number">13.2</span> CRAN Task Views implied by cited packages</h3>
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-blanchard2022fiscal" class="csl-entry" role="listitem">
+O. Blanchard. Fiscal policy under low interest rates. 2022.
+</div>
+<div id="ref-blanchard1990" class="csl-entry" role="listitem">
+O. J. Blanchard. Suggestions for a new set of fiscal indicators. <em>OECD Economics Department Working Papers</em>, (79): 1990. DOI <a href="https://doi.org/10.1787/435618162862">10.1787/435618162862</a>.
+</div>
+<div id="ref-bohn1998" class="csl-entry" role="listitem">
+H. Bohn. The behavior of <span>U.S.</span> Public debt and deficits. <em>Quarterly Journal of Economics</em>, 113(3): 949–963, 1998. DOI <a href="https://doi.org/10.1162/003355398555793">10.1162/003355398555793</a>.
+</div>
+<div id="ref-celasun2006primary" class="csl-entry" role="listitem">
+O. Celasun, X. Debrun and J. D. Ostry. Primary surplus behavior and risks to fiscal sustainability in emerging market countries: A <span>“fan-chart”</span> approach. <em>IMF Staff Papers</em>, 53(3): 401–425, 2006. DOI <a href="https://doi.org/10.2307/30035919">10.2307/30035919</a>.
+</div>
+<div id="ref-ec2024fsr" class="csl-entry" role="listitem">
+European Commission. Fiscal sustainability report 2024. European Commission, Directorate-General for Economic; Financial Affairs. 2024.
+</div>
+<div id="ref-furman2023weworry" class="csl-entry" role="listitem">
+J. Furman and L. H. Summers. Why we should worry about <span>U.S.</span> debt. 2023. URL <a href="https://www.piie.com/publications/working-papers/2023/why-we-should-worry-about-us-debt">https://www.piie.com/publications/working-papers/2023/why-we-should-worry-about-us-debt</a>.
+</div>
+<div id="ref-ghosh2013fiscal" class="csl-entry" role="listitem">
+A. R. Ghosh, J. I. Kim, E. G. Mendoza, J. D. Ostry and M. S. Qureshi. Fiscal fatigue, fiscal space and debt sustainability in advanced economies. <em>Economic Journal</em>, 123(566): F4–F30, 2013. DOI <a href="https://doi.org/10.1111/ecoj.12010">10.1111/ecoj.12010</a>.
+</div>
+<div id="ref-imf2013" class="csl-entry" role="listitem">
+International Monetary Fund. Staff guidance note for public debt sustainability analysis in market-access countries. International Monetary Fund. 2013.
+</div>
+<div id="ref-imf2022" class="csl-entry" role="listitem">
+International Monetary Fund. Staff guidance note on the sovereign risk and debt sustainability framework for market access countries. International Monetary Fund. 2022.
+</div>
+<div id="ref-mendoza2008international" class="csl-entry" role="listitem">
+E. G. Mendoza and J. D. Ostry. International evidence on fiscal solvency: Is fiscal policy <span>“responsible”</span>? <em>Journal of Monetary Economics</em>, 55(6): 1081–1093, 2008. DOI <a href="https://doi.org/10.1016/j.jmoneco.2008.06.003">10.1016/j.jmoneco.2008.06.003</a>.
+</div>
+<div id="ref-stock2007why" class="csl-entry" role="listitem">
+J. H. Stock and M. W. Watson. Why has <span>U.S.</span> Inflation become harder to forecast? <em>Journal of Money, Credit and Banking</em>, 39(s1): 3–33, 2007. DOI <a href="https://doi.org/10.1111/j.1538-4616.2007.00014.x">10.1111/j.1538-4616.2007.00014.x</a>.
+</div>
+</div>
+<!--radix_placeholder_article_footer-->
+<!--/radix_placeholder_article_footer-->
+</div>
+
+<div class="d-appendix">
+</div>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+<!--radix_placeholder_site_after_body-->
+<!--/radix_placeholder_site_after_body-->
+<!--radix_placeholder_appendices-->
+<div class="appendix-bottom">
+<h3 id="references">References</h3>
+<div id="references-listing"></div>
+<h3 id="reuse">Reuse</h3>
+<p>Text and figures are licensed under Creative Commons Attribution <a rel="license" href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>. The figures that have been reused from other sources don't fall under this license and can be recognized by a note in their caption: "Figure from ...".</p>
+<h3 id="citation">Citation</h3>
+<p>For attribution, please cite this work as</p>
+<pre class="citation-appendix short">Coverdale, "Debtkit: Debt Sustainability Analysis and Fiscal Risk Assessment in R", The R Journal, 2026</pre>
+<p>BibTeX citation</p>
+<pre class="citation-appendix long">@article{debtkit,
+  author = {Coverdale, Charles},
+  title = {Debtkit: Debt Sustainability Analysis and Fiscal Risk Assessment in R},
+  journal = {The R Journal},
+  year = {2026},
+  issn = {2073-4859},
+  pages = {1}
+}</pre>
+</div>
+<!--/radix_placeholder_appendices-->
+<!--radix_placeholder_navigation_after_body-->
+<!--/radix_placeholder_navigation_after_body-->
+
+</body>
+
+</html>
