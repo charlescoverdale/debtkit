@@ -52,7 +52,7 @@ Sovereign Risk and Debt Sustainability Framework [@imf2022] asks
 members to assess near-term risk, medium-term debt dynamics, and
 long-term fiscal pressures under a standardised template. The
 European Commission's Fiscal Sustainability Report applies the S1
-and S2 indicators [@ec2024fsr] to each Member State annually.
+and S2 indicators [@ec2024dsm] to each Member State annually.
 Finance ministries running their own DSAs typically assemble the
 same building blocks from first principles.
 
@@ -177,7 +177,7 @@ years)} decomposes the observed path into four contributions:
 interest, growth, primary balance, and stock-flow adjustment.
 Figure \ref{fig:decompose} shows the decomposition for the United
 States over 2004 to 2023, using Federal Reserve Bank of St.\ Louis
-Economic Data (FRED) series for debt held by the public
+Economic Data (FRED) series for total public debt
 (\code{GFDEGDQ188S}), the federal budget balance
 (\code{FYFSGDA188S}) adjusted by interest outlays to recover the
 primary balance, the ten-year Treasury yield as the effective rate,
@@ -327,10 +327,9 @@ summary used in the replication.
 
 The most-watched fiscal question in US macroeconomic policy since
 2020 has been whether the federal debt ratio, which jumped from
-79 per cent of GDP at end-2019 to 100 per cent by end-2021, is on
-a sustainable trajectory [@blanchard2022fiscal;
-@furman2023weworry]. The \CRANpkg{debtkit} pipeline produces a
-compact answer in three steps.
+106 per cent of GDP at end-2019 to 119 per cent by end-2021, is on
+a sustainable trajectory [@blanchard2022fiscal]. The
+\CRANpkg{debtkit} pipeline produces a compact answer in three steps.
 
 First, the historical decomposition (Figure \ref{fig:decompose})
 shows that the 2020 spike was driven almost entirely by the

@@ -265,7 +265,7 @@ All objects returned by `dk_project()`, `dk_decompose()`, `dk_fan_chart()`, `dk_
 
 ## Academic references
 
-- Blanchard, O.J. (1990). "Suggestions for a New Set of Fiscal Indicators." *OECD Economics Department Working Papers*, No. 79. [doi:10.1787/budget-v2-art12-en](https://doi.org/10.1787/budget-v2-art12-en)
+- Blanchard, O.J. (1990). "Suggestions for a New Set of Fiscal Indicators." *OECD Economics Department Working Papers*, No. 79. [doi:10.1787/435618162862](https://doi.org/10.1787/435618162862)
 - Bohn, H. (1998). "The Behavior of U.S. Public Debt and Deficits." *Quarterly Journal of Economics*, 113(3), 949-963. [doi:10.1162/003355398555793](https://doi.org/10.1162/003355398555793)
 - Ghosh, A.R., Kim, J.I., Mendoza, E.G., Ostry, J.D. and Qureshi, M.S. (2013). "Fiscal Fatigue, Fiscal Space and Debt Sustainability in Advanced Economies." *The Economic Journal*, 123(566), F4-F30.
 - IMF (2013). *Staff Guidance Note for Public Debt Sustainability Analysis in Market-Access Countries*. IMF Policy Paper.
