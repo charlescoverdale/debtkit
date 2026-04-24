@@ -41,3 +41,7 @@ reference:
     contents:
       - dk_sample_data
 
+
+  - title: "Package"
+    contents:
+      - debtkit-package
