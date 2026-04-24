@@ -49,3 +49,9 @@ Sample data
 
 - [`dk_sample_data()`](https://charlescoverdale.github.io/debtkit/reference/dk_sample_data.md)
   : Sample Fiscal Data
+
+## Package
+
+- [`debtkit`](https://charlescoverdale.github.io/debtkit/reference/debtkit-package.md)
+  [`debtkit-package`](https://charlescoverdale.github.io/debtkit/reference/debtkit-package.md)
+  : debtkit: Debt Sustainability Analysis and Fiscal Risk Assessment
