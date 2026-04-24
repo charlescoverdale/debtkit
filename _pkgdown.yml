@@ -1,0 +1,43 @@
+url: https://charlescoverdale.github.io/debtkit/
+
+template:
+  bootstrap: 5
+
+navbar:
+  structure:
+    left:  [intro, reference, articles, news]
+    right: [search, github]
+
+reference:
+  - title: "Projections"
+    desc: "Debt-to-GDP paths and financing"
+    contents:
+      - dk_project
+      - dk_gfn
+      - dk_rg
+
+  - title: "Sustainability Analysis"
+    desc: "Bohn test, gaps, and decomposition"
+    contents:
+      - dk_bohn_test
+      - dk_sustainability_gap
+      - dk_decompose
+      - dk_estimate_shocks
+
+  - title: "Stress Testing"
+    desc: "IMF-style macro stress tests"
+    contents:
+      - dk_stress_test
+      - dk_compare
+
+  - title: "Visualisation"
+    desc: "Fan charts and heat maps"
+    contents:
+      - dk_fan_chart
+      - dk_heat_map
+
+  - title: "Data"
+    desc: "Sample data"
+    contents:
+      - dk_sample_data
+

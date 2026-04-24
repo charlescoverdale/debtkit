@@ -1,0 +1,27 @@
+# debtkit
+
+> Analyses government debt sustainability using the standard debt dynamics framework from Blanchard (1990) <doi:10. Install with `install.packages("debtkit")`.
+
+Version: 0.1.3. License: MIT.
+
+## Functions
+
+- [`dk_bohn_test()`](https://charlescoverdale.github.io/debtkit/reference/dk_bohn_test.html): Bohn's Fiscal Reaction Function Test
+- [`dk_compare()`](https://charlescoverdale.github.io/debtkit/reference/dk_compare.html): Compare Debt Projections
+- [`dk_decompose()`](https://charlescoverdale.github.io/debtkit/reference/dk_decompose.html): Decompose Historical Debt Changes
+- [`dk_estimate_shocks()`](https://charlescoverdale.github.io/debtkit/reference/dk_estimate_shocks.html): Estimate Joint Distribution of Macro Shocks
+- [`dk_fan_chart()`](https://charlescoverdale.github.io/debtkit/reference/dk_fan_chart.html): Stochastic Debt Fan Chart
+- [`dk_gfn()`](https://charlescoverdale.github.io/debtkit/reference/dk_gfn.html): Gross Financing Needs
+- [`dk_heat_map()`](https://charlescoverdale.github.io/debtkit/reference/dk_heat_map.html): IMF-Style Risk Heat Map
+- [`dk_project()`](https://charlescoverdale.github.io/debtkit/reference/dk_project.html): Project Debt-to-GDP Path
+- [`dk_rg()`](https://charlescoverdale.github.io/debtkit/reference/dk_rg.html): Interest Rate-Growth Differential and Debt-Stabilising Primary Balance
+- [`dk_sample_data()`](https://charlescoverdale.github.io/debtkit/reference/dk_sample_data.html): Sample Fiscal Data
+- [`dk_stress_test()`](https://charlescoverdale.github.io/debtkit/reference/dk_stress_test.html): IMF Standardised Stress Tests
+- [`dk_sustainability_gap()`](https://charlescoverdale.github.io/debtkit/reference/dk_sustainability_gap.html): S1 and S2 Sustainability Gap Indicators
+
+## Documentation
+
+- [Full reference](https://charlescoverdale.github.io/debtkit/reference/)
+- [GitHub](https://github.com/charlescoverdale/debtkit)
+- [CRAN](https://CRAN.R-project.org/package=debtkit)
+
