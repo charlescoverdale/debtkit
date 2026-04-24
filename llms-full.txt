@@ -1,0 +1,568 @@
+# debtkit — full API reference
+
+> Analyses government debt sustainability using the standard debt dynamics framework from Blanchard (1990) <doi:10.
+
+- Version: 0.1.3
+- Install: `install.packages("debtkit")`
+- CRAN: https://CRAN.R-project.org/package=debtkit
+- GitHub: https://github.com/charlescoverdale/debtkit
+- Reference site: https://charlescoverdale.github.io/debtkit/
+
+This file is a self-contained reference for LLM agents: every exported
+function with its signature, arguments, return value, and example.
+
+---
+
+## `dk_bohn_test()`
+
+**Bohn's Fiscal Reaction Function Test**
+
+Estimates the fiscal reaction function following Bohn (1998): `pb(t) = rho * d(t-1) + alpha * Z(t) + epsilon(t)`, where `pb` is the primary balance-to-GDP ratio, `d` is lagged debt-to-GDP, and `Z` is a matrix of control variables.
+
+**Usage**
+
+```r
+dk_bohn_test(
+  primary_balance,
+  debt,
+  controls = NULL,
+  method = c("ols", "rolling", "quadratic"),
+  window = NULL,
+  robust_se = FALSE
+)
+```
+
+**Arguments**
+
+- `primary_balance` — Numeric vector of primary balance-to-GDP ratios.
+- `debt` — Numeric vector of lagged debt-to-GDP ratios (same length as `primary_balance`).
+- `controls` — Optional data.frame of control variables (same number of rows as `primary_balance`). Each column enters the regression as a separate regressor.
+- `method` — Character; `"ols"` (default) for a single OLS regression over the full sample, `"rolling"` for rolling-window regressions, or `"quadratic"` for a non-linear specification that includes a squared debt term to detect fiscal fatigue (Ghosh et al. 2013).
+- `window` — Integer; rolling window size. Required when `method = "rolling"`, ignored otherwise.
+- `robust_se` — Logical; if `TRUE`, compute Newey-West HAC standard errors using a Bartlett kernel with automatic bandwidth `floor(4*(n/100)^(2/9))`. This corrects for serial correlation in fiscal data. Default `FALSE`.
+
+**Returns**
+
+An S3 object of class `dk_bohn` with components: rhoEstimated fiscal response coefficient (full sample or last rolling window). rho_seStandard error of `rho`. rho_pvaluep-value for the test H0: rho = 0. sustainableLogical; `TRUE` if `rho > 0` and `rho_pvalue < 0.05`. modelThe `lm` object from the full-sample (OLS/quadratic) or last-window (rolling) regression. methodThe method used (`"ols"`, `"rolling"`, or `"quadratic"`). rho_tsA data.frame with columns `index`, `rho`, `rho_lower`, `rho_upper` if `method = "rolling"`; `NULL` otherwise. robust_seLogical; whether HAC standard errors were used. rho2Coefficient on debt squared (only for `method = "quadratic"`). rho2_seStandard error of `rho2` (quadratic only). rho2_pvaluep-value for `rho2` (quadratic only). turning_pointDebt level where fiscal response peaks, `-rho/(2*rho2)` (quadratic only).
+
+**Example**
+
+```r
+# Simulate data with positive fiscal response
+set.seed(42)
+n <- 50
+debt <- cumsum(rnorm(n, 0.01, 0.02)) + 0.6
+pb <- 0.04 * debt + rnorm(n, 0, 0.005)
+result <- dk_bohn_test(pb, debt)
+print(result)
+```
+
+---
+
+## `dk_compare()`
+
+**Compare Debt Projections**
+
+Produces a side-by-side comparison of multiple debt-to-GDP projections, aligning them by year and computing terminal values.
+
+**Usage**
+
+```r
+dk_compare(..., metric = "debt")
+```
+
+**Arguments**
+
+- `...` — Named `dk_projection` objects to compare. Names are used as scenario labels.
+- `metric` — Character. The metric to compare. Currently only `"debt"` is supported. Default `"debt"`.
+
+**Returns**
+
+An S3 object of class `dk_comparison` containing: pathsA `data.frame` with a `year` column and one column per scenario, giving the debt-to-GDP path. terminalNamed numeric vector of terminal debt-to-GDP ratios.
+
+**Example**
+
+```r
+d <- dk_sample_data()
+base <- dk_project(tail(d$debt, 1), 0.03, 0.04, 0.01, horizon = 5)
+austerity <- dk_project(tail(d$debt, 1), 0.03, 0.04, 0.03, horizon = 5)
+stimulus <- dk_project(tail(d$debt, 1), 0.03, 0.05, -0.01, horizon = 5)
+
+comp <- dk_compare(
+  Baseline = base,
+  Austerity = austerity,
+  Stimulus = stimulus
+)
+comp
+plot(comp)
+```
+
+---
+
+## `dk_decompose()`
+
+**Decompose Historical Debt Changes**
+
+Breaks down observed year-on-year changes in the debt-to-GDP ratio into four components:
+
+**Usage**
+
+```r
+dk_decompose(debt, interest_rate, gdp_growth, primary_balance, years = NULL)
+```
+
+**Arguments**
+
+- `debt` — Numeric vector of historical debt-to-GDP ratios.
+- `interest_rate` — Numeric vector of effective interest rates on government debt. Must be the same length as `debt`.
+- `gdp_growth` — Numeric vector of nominal GDP growth rates. Must be the same length as `debt`.
+- `primary_balance` — Numeric vector of primary balance-to-GDP ratios (positive = surplus). Must be the same length as `debt`.
+- `years` — Optional integer vector of year labels. Must be the same length as `debt`. If `NULL` (default), years are numbered sequentially.
+
+**Returns**
+
+An S3 object of class `dk_decomposition` containing: dataA `data.frame` with columns `year`, `debt`, `change`, `interest_effect`, `growth_effect`, `snowball_effect`, `primary_balance_effect`, and `sfa`. yearsThe year labels used.
+
+**Example**
+
+```r
+d <- dk_sample_data()
+dec <- dk_decompose(
+  debt = d$debt,
+  interest_rate = d$interest_rate,
+  gdp_growth = d$gdp_growth,
+  primary_balance = d$primary_balance,
+  years = d$years
+)
+dec
+plot(dec)
+```
+
+---
+
+## `dk_estimate_shocks()`
+
+**Estimate Joint Distribution of Macro Shocks**
+
+Estimates the joint distribution of GDP growth, interest rate, and primary balance shocks for use in stochastic debt sustainability analysis. Three estimation methods are supported: a VAR(1) model (default), residual bootstrap, and a simple multivariate normal fit.
+
+**Usage**
+
+```r
+dk_estimate_shocks(
+  gdp_growth,
+  interest_rate,
+  primary_balance,
+  method = c("var", "bootstrap", "normal"),
+  years = NULL
+)
+```
+
+**Arguments**
+
+- `gdp_growth` — Numeric vector of historical real GDP growth rates.
+- `interest_rate` — Numeric vector of historical nominal (or real) interest rates.
+- `primary_balance` — Numeric vector of historical primary balance-to-GDP ratios.
+- `method` — Character; one of `"var"` (default), `"bootstrap"`, or `"normal"`.
+- `years` — Optional numeric vector of year labels (same length as data).
+
+**Returns**
+
+An S3 object of class `dk_shocks` with components: vcov3x3 variance-covariance matrix with rows/columns named `growth`, `interest_rate`, `primary_balance`. meansNamed numeric vector of variable means. methodThe estimation method used. residualsMatrix of residuals (for `"var"` and `"bootstrap"`) or `NULL` (for `"normal"`). var_coefficientsVAR(1) coefficient matrix (for `"var"`) or `NULL`. n_obsNumber of observations used.
+
+**Example**
+
+```r
+set.seed(1)
+n <- 30
+g <- rnorm(n, 0.02, 0.015)
+r <- rnorm(n, 0.03, 0.01)
+pb <- rnorm(n, -0.02, 0.01)
+shocks <- dk_estimate_shocks(g, r, pb)
+print(shocks)
+```
+
+---
+
+## `dk_fan_chart()`
+
+**Stochastic Debt Fan Chart**
+
+Projects debt-to-GDP paths via Monte Carlo simulation using the standard debt dynamics equation. At each step, correlated shocks to growth, the interest rate, and the primary balance are drawn from a multivariate normal distribution and added to the baseline paths. The result is a fan chart showing the distribution of projected debt paths.
+
+**Usage**
+
+```r
+dk_fan_chart(
+  debt,
+  interest_rate,
+  gdp_growth,
+  primary_balance,
+  shocks = NULL,
+  shock_vcov = NULL,
+  n_sim = 1000L,
+  horizon = 5L,
+  confidence = c(0.1, 0.25, 0.5, 0.75, 0.9),
+  seed = NULL
+)
+```
+
+**Arguments**
+
+- `debt` — Numeric scalar; initial debt-to-GDP ratio.
+- `interest_rate` — Numeric scalar or vector of length `horizon`; baseline interest rate path.
+- `gdp_growth` — Numeric scalar or vector of length `horizon`; baseline GDP growth path.
+- `primary_balance` — Numeric scalar or vector of length `horizon`; baseline primary balance-to-GDP path.
+- `shocks` — A `dk_shocks` object (from `dk_estimate_shocks()`) providing the shock distribution, or `NULL`.
+- `shock_vcov` — Optional 3x3 variance-covariance matrix (alternative to `shocks`). Rows/columns ordered: growth, interest_rate, primary_balance. Ignored if `shocks` is provided.
+- `n_sim` — Integer; number of Monte Carlo simulations (default 1000).
+- `horizon` — Integer; projection horizon in years (default 5).
+- `confidence` — Numeric vector of quantile levels for fan bands (default `c(0.10, 0.25, 0.50, 0.75, 0.90)`).
+- `seed` — Optional integer seed for reproducibility.
+
+**Returns**
+
+An S3 object of class `dk_fan` with components: simulationsMatrix of dimension `n_sim` x (`horizon` + 1) containing all simulated debt paths. quantilesMatrix of quantiles at each time step, with rows corresponding to the `confidence` levels. baselineNumeric vector of length `horizon` + 1; the deterministic baseline debt path. confidenceThe quantile levels used. horizonThe projection horizon. prob_aboveNamed list with the probability of debt exceeding 60 percent, 90 percent, and 120 percent of GDP at the terminal year.
+
+**Example**
+
+```r
+set.seed(1)
+n <- 30
+g <- rnorm(n, 0.02, 0.015)
+r <- rnorm(n, 0.03, 0.01)
+pb <- rnorm(n, -0.02, 0.01)
+shocks <- dk_estimate_shocks(g, r, pb)
+
+fan <- dk_fan_chart(
+  debt = 0.90,
+  interest_rate = 0.03,
+  gdp_growth = 0.02,
+  primary_balance = -0.02,
+  shocks = shocks,
+  n_sim = 500,
+  horizon = 10,
+  seed = 42
+)
+print(fan)
+```
+
+---
+
+## `dk_gfn()`
+
+**Gross Financing Needs**
+
+Computes gross financing needs (GFN) as a share of GDP over a projection horizon. GFN represents the total amount of new borrowing a government requires each year to cover its primary deficit, interest payments, and maturing debt:
+
+**Usage**
+
+```r
+dk_gfn(debt, interest_rate, maturity_profile, primary_balance, horizon = 5)
+```
+
+**Arguments**
+
+- `debt` — Numeric scalar. Initial debt-to-GDP ratio.
+- `interest_rate` — Numeric scalar or vector of length `horizon`. Effective nominal interest rate on government debt.
+- `maturity_profile` — Numeric vector or scalar. If a vector, gives the share of GDP maturing in each year of the horizon. If a scalar, interpreted as the average maturity in years; debt is assumed to mature uniformly at `debt / maturity_profile` per year.
+- `primary_balance` — Numeric scalar or vector of length `horizon`. Primary balance as a share of GDP (positive = surplus).
+- `horizon` — Integer scalar. Projection horizon in years. Default `5`.
+
+**Returns**
+
+A `data.frame` with columns: yearYear index (1 to `horizon`). primary_deficitPrimary deficit (negative of primary balance). interest_paymentsInterest payments as a share of GDP. maturing_debtMaturing debt as a share of GDP. gfnTotal gross financing needs as a share of GDP.
+
+**Example**
+
+```r
+# Scalar average maturity of 7 years
+dk_gfn(debt = 0.90, interest_rate = 0.03,
+       maturity_profile = 7, primary_balance = -0.02)
+
+# Explicit maturity profile
+dk_gfn(debt = 0.90, interest_rate = 0.03,
+       maturity_profile = c(0.15, 0.12, 0.10, 0.08, 0.05),
+       primary_balance = -0.02)
+```
+
+---
+
+## `dk_heat_map()`
+
+**IMF-Style Risk Heat Map**
+
+Classifies sovereign debt risk as low, medium, or high based on IMF (2013) thresholds for debt-to-GDP, gross financing needs, and optional debt-profile indicators. Advanced economies and emerging markets use different thresholds.
+
+**Usage**
+
+```r
+dk_heat_map(
+  debt,
+  gross_financing_needs,
+  debt_profile = NULL,
+  country_type = c("ae", "em")
+)
+```
+
+**Arguments**
+
+- `debt` — Numeric scalar. Debt-to-GDP ratio.
+- `gross_financing_needs` — Numeric scalar. Gross financing needs as a share of GDP.
+- `debt_profile` — Optional named list of debt-profile indicators (all as ratios): share_st_debtShare of short-term debt in total debt. fx_shareShare of foreign-currency-denominated debt. nonresident_shareShare of debt held by non-residents. bank_shareShare of debt held by domestic banks. change_st_debtYear-on-year change in the share of short-term debt (in percentage points of GDP).
+- `country_type` — Character. Either `"ae"` (advanced economy, default) or `"em"` (emerging market).
+
+**Returns**
+
+An S3 object of class `dk_heatmap` containing: ratingsNamed list of risk ratings (`"low"`, `"medium"`, or `"high"`) for each indicator. overallCharacter. Overall risk level: `"high"` if any indicator is high, `"medium"` if any is medium, otherwise `"low"`. valuesNamed list of input values. thresholdsThe thresholds used for classification. country_typeThe country type used.
+
+**Example**
+
+```r
+hm <- dk_heat_map(
+  debt = 0.90,
+  gross_financing_needs = 0.18,
+  debt_profile = list(fx_share = 0.30, share_st_debt = 0.15),
+  country_type = "ae"
+)
+hm
+```
+
+---
+
+## `dk_project()`
+
+**Project Debt-to-GDP Path**
+
+Projects a debt-to-GDP ratio forward using the standard debt dynamics equation:
+
+**Usage**
+
+```r
+dk_project(
+  debt,
+  interest_rate,
+  gdp_growth,
+  primary_balance,
+  sfa = 0,
+  horizon = 10,
+  date = NULL
+)
+```
+
+**Arguments**
+
+- `debt` — Numeric scalar. Initial debt-to-GDP ratio (e.g., `0.90` for 90 per cent of GDP).
+- `interest_rate` — Numeric scalar or vector of length `horizon`. Nominal effective interest rate on government debt.
+- `gdp_growth` — Numeric scalar or vector of length `horizon`. Nominal GDP growth rate.
+- `primary_balance` — Numeric scalar or vector of length `horizon`. Primary balance as a share of GDP. Positive values denote a surplus; negative values a deficit.
+- `sfa` — Numeric scalar or vector of length `horizon`. Stock-flow adjustment as a share of GDP. Default `0`.
+- `horizon` — Integer scalar. Number of years to project forward. Default `10`.
+- `date` — Optional `Date`. If supplied, the projection is anchored to this date (stored in the output for labelling purposes).
+
+**Returns**
+
+An S3 object of class `dk_projection` containing: debt_pathNumeric vector of length `horizon + 1`, giving the debt-to-GDP ratio from the initial period through the terminal period. decompositionA `data.frame` with columns `year`, `debt`, `interest_effect`, `growth_effect`, `snowball_effect`, `primary_balance_effect`, `sfa_effect`, and `change`. horizonThe projection horizon. inputsA list storing all input parameters.
+
+**Example**
+
+```r
+d <- dk_sample_data()
+proj <- dk_project(
+  debt = tail(d$debt, 1),
+  interest_rate = 0.03,
+  gdp_growth = 0.04,
+  primary_balance = 0.01
+)
+proj
+plot(proj)
+```
+
+---
+
+## `dk_rg()`
+
+**Interest Rate-Growth Differential and Debt-Stabilising Primary Balance**
+
+Computes the interest rate-growth differential (r - g), a key indicator of debt sustainability. When r > g, debt grows faster than the economy (the "snowball effect" is adverse) and a primary surplus is needed to stabilise the debt ratio. When r < g, the government can run a primary deficit and still see the debt ratio fall.
+
+**Usage**
+
+```r
+dk_rg(interest_rate, gdp_growth, inflation = NULL, debt = NULL)
+```
+
+**Arguments**
+
+- `interest_rate` — Numeric. Effective nominal interest rate on government debt. Scalar or vector.
+- `gdp_growth` — Numeric. Nominal GDP growth rate. Scalar or vector (same length as `interest_rate`).
+- `inflation` — Numeric or `NULL`. If supplied, the inflation rate used to compute the real r - g. Scalar or same length as `interest_rate`. Default `NULL`.
+- `debt` — Numeric or `NULL`. If supplied, the debt-to-GDP ratio used to compute the debt-stabilising primary balance. Scalar or same length as `interest_rate`. Default `NULL`.
+
+**Returns**
+
+A named list with: rg_differentialNumeric vector. The nominal r - g differential. real_rgNumeric vector. The real r - g differential. Only present if `inflation` was supplied. debt_stabilising_pbNumeric vector. The debt-stabilising primary balance as a share of GDP. Only present if `debt` was supplied.
+
+**Example**
+
+```r
+# Simple scalar case
+dk_rg(interest_rate = 0.04, gdp_growth = 0.03)
+
+# With debt: compute stabilising primary balance
+dk_rg(interest_rate = 0.04, gdp_growth = 0.03, debt = 0.90)
+
+# With inflation: compute real r-g
+dk_rg(interest_rate = 0.04, gdp_growth = 0.05, inflation = 0.02)
+
+# Vector case using sample data
+d <- dk_sample_data()
+dk_rg(
+  interest_rate = d$interest_rate,
+  gdp_growth = d$gdp_growth,
+  debt = d$debt
+)
+```
+
+---
+
+## `dk_sample_data()`
+
+**Sample Fiscal Data**
+
+Provides built-in sample datasets for running examples and tests without requiring external data.
+
+**Usage**
+
+```r
+dk_sample_data(country = c("sample", "high_debt"))
+```
+
+**Arguments**
+
+- `country` — Character. Which sample dataset to return. Options: `"sample"` (default) provides a synthetic 20-year history for a mid-income country; `"high_debt"` provides a high-debt scenario.
+
+**Returns**
+
+A list with components: yearsInteger vector of years. debtNumeric vector of debt-to-GDP ratios. interest_rateNumeric vector of effective interest rates on government debt. gdp_growthNumeric vector of nominal GDP growth rates. primary_balanceNumeric vector of primary balance-to-GDP ratios (positive = surplus).
+
+**Example**
+
+```r
+d <- dk_sample_data()
+d$debt
+d$years
+```
+
+---
+
+## `dk_stress_test()`
+
+**IMF Standardised Stress Tests**
+
+Applies six standardised IMF stress-test scenarios to a baseline debt projection using the debt dynamics equation:
+
+**Usage**
+
+```r
+dk_stress_test(
+  debt,
+  interest_rate,
+  gdp_growth,
+  primary_balance,
+  horizon = 5,
+  growth_shock = -0.01,
+  interest_shock = 0.02,
+  exchange_shock = 0.15,
+  fx_share = 0,
+  pb_shock = -0.01,
+  contingent_shock = 0.1,
+  calibrate = NULL
+)
+```
+
+**Arguments**
+
+- `debt` — Numeric scalar. Initial debt-to-GDP ratio.
+- `interest_rate` — Numeric scalar or vector of length `horizon`. Baseline nominal effective interest rate.
+- `gdp_growth` — Numeric scalar or vector of length `horizon`. Baseline nominal GDP growth rate.
+- `primary_balance` — Numeric scalar or vector of length `horizon`. Baseline primary balance as a share of GDP (positive = surplus).
+- `horizon` — Integer scalar. Projection horizon in years. Default `5`.
+- `growth_shock` — Numeric scalar. Percentage-point reduction in GDP growth applied in the first two years. Default `-0.01` (1 pp lower growth).
+- `interest_shock` — Numeric scalar. Percentage-point increase in the interest rate. Default `0.02` (200 basis points).
+- `exchange_shock` — Numeric scalar. Depreciation fraction applied to foreign-currency debt. Default `0.15` (15 per cent depreciation).
+- `fx_share` — Numeric scalar. Share of debt denominated in foreign currency. Default `0`.
+- `pb_shock` — Numeric scalar. Percentage-point deterioration in primary balance in the first two years. Default `-0.01`.
+- `contingent_shock` — Numeric scalar. One-off increase in debt-to-GDP from contingent liabilities materialising. Default `0.10`.
+- `calibrate` — Optional named list for data-driven shock calibration. Should contain numeric vectors `gdp_growth_hist`, `interest_rate_hist`, and `primary_balance_hist`. When provided, shock sizes are computed as one standard deviation of each historical series, replacing the fixed defaults. When `NULL` (default), the fixed defaults are used.
+
+**Returns**
+
+An S3 object of class `dk_stress` containing: scenariosA `data.frame` with columns `year`, `baseline`, `growth`, `interest_rate`, `exchange_rate`, `primary_balance`, `combined`, and `contingent`. terminalNamed numeric vector of terminal debt-to-GDP under each scenario. inputsA list storing all input parameters.
+
+**Example**
+
+```r
+st <- dk_stress_test(
+  debt = 0.90,
+  interest_rate = 0.03,
+  gdp_growth = 0.04,
+  primary_balance = 0.01,
+  fx_share = 0.20
+)
+st
+plot(st)
+```
+
+---
+
+## `dk_sustainability_gap()`
+
+**S1 and S2 Sustainability Gap Indicators**
+
+Computes the S1 and S2 fiscal sustainability gap indicators used by the European Commission to assess the size of the permanent budgetary adjustment required to ensure debt sustainability.
+
+**Usage**
+
+```r
+dk_sustainability_gap(
+  debt,
+  structural_balance,
+  gdp_growth,
+  interest_rate,
+  ageing_costs = 0,
+  target_debt = 0.6,
+  target_year = 20,
+  indicator = c("both", "S1", "S2")
+)
+```
+
+**Arguments**
+
+- `debt` — Numeric scalar. Current debt-to-GDP ratio.
+- `structural_balance` — Numeric scalar. Current structural primary balance as a share of GDP (positive = surplus).
+- `gdp_growth` — Numeric scalar. Real GDP growth rate.
+- `interest_rate` — Numeric scalar. Real interest rate.
+- `ageing_costs` — Numeric scalar. Projected increase in age-related expenditure as percentage points of GDP. Default `0`.
+- `target_debt` — Numeric scalar. Target debt-to-GDP ratio for S1. Default `0.60`.
+- `target_year` — Integer scalar. Number of years to reach the target debt ratio. Default `20`.
+- `indicator` — Character. Which indicator to compute: `"S1"`, `"S2"`, or `"both"` (default).
+
+**Returns**
+
+An S3 object of class `dk_sgap` containing: S1The S1 sustainability gap (or `NA` if not requested). S2The S2 sustainability gap (or `NA` if not requested). risk_S1Risk classification for S1: `"low"`, `"medium"`, or `"high"`. risk_S2Risk classification for S2: `"low"`, `"medium"`, or `"high"`. required_pbThe required structural primary balance implied by S1. current_pbThe current structural primary balance. inputsA list storing all input parameters.
+
+**Example**
+
+```r
+dk_sustainability_gap(
+  debt = 0.90,
+  structural_balance = -0.01,
+  gdp_growth = 0.015,
+  interest_rate = 0.025,
+  ageing_costs = 0.02
+)
+```
+
+---
+

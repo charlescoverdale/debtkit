@@ -2,6 +2,8 @@
 
 > Analyses government debt sustainability using the standard debt dynamics framework from Blanchard (1990) <doi:10. Install with `install.packages("debtkit")`.
 
+Full API reference (for agents): https://raw.githubusercontent.com/charlescoverdale/debtkit/main/llms-full.txt
+
 Version: 0.1.3. License: MIT.
 
 ## Functions
