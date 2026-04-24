@@ -1,0 +1,341 @@
+# debtkit
+
+**Analyse whether a government’s debt is on a sustainable path, using
+the same frameworks that the IMF and European Commission use in their
+country assessments.**
+
+## Installation
+
+``` r
+install.packages("debtkit")
+
+# Or install the development version from GitHub
+# install.packages("devtools")
+devtools::install_github("charlescoverdale/debtkit")
+```
+
+``` r
+library(debtkit)
+
+# Project debt forward 10 years
+proj <- dk_project(debt = 0.90, interest_rate = 0.04,
+                   gdp_growth = 0.03, primary_balance = 0.01, horizon = 10)
+proj
+#> -- Debt Sustainability Projection --
+#> * Horizon: 10 years
+#> * Initial debt/GDP: 90%
+#> * Terminal debt/GDP: 82.6%
+#> * Debt-stabilising primary balance: 0.8%
+```
+
+## Why debt sustainability analysis?
+
+Every government borrows money. The central question in public finance
+is whether a government can keep servicing that debt, or whether the
+debt ratio will spiral upward until something breaks. Debt
+sustainability analysis (DSA) is the standard framework for answering
+this question. The IMF, the European Commission, finance ministries, and
+central banks all use it.
+
+The core idea is simple. Next year’s debt-to-GDP ratio depends on four
+things: this year’s debt, the interest rate on that debt, how fast the
+economy is growing, and whether the government is running a surplus or
+deficit (excluding interest payments). When interest rates exceed GDP
+growth, debt snowballs. When growth exceeds interest rates, debt
+stabilises more easily.
+
+In practice, a full DSA combines several analyses: deterministic
+projections under baseline assumptions, historical decompositions of
+what drove debt changes in the past, stress tests under adverse
+scenarios, stochastic simulations that generate thousands of possible
+paths, tests of whether the government historically responds to rising
+debt by tightening policy, and calculations of how much fiscal
+adjustment is needed to hit a target. All of these are well-established
+methods, but tedious to code from scratch. `debtkit` packages them into
+clean R functions with plotting methods, so you can go from raw fiscal
+data to a complete assessment in a few lines of code.
+
+## Examples
+
+### Where is the debt ratio heading?
+
+Project debt forward under constant assumptions. The output tells you
+the terminal debt ratio and the primary balance that would stabilise
+debt at its current level.
+
+``` r
+library(debtkit)
+
+proj <- dk_project(debt = 0.90, interest_rate = 0.04,
+                   gdp_growth = 0.03, primary_balance = 0.01, horizon = 10)
+proj
+#> -- Debt Sustainability Projection --
+#> * Horizon: 10 years
+#> * Initial debt/GDP: 90%
+#> * Terminal debt/GDP: 82.6%
+#> * Debt-stabilising primary balance: 0.8%
+
+plot(proj)
+```
+
+### What drove debt changes in the past?
+
+Decompose historical debt movements into four components: interest costs
+pushing debt up, GDP growth pulling it down, the primary balance, and a
+residual (stock-flow adjustment).
+
+``` r
+d <- dk_sample_data()
+decomp <- dk_decompose(d$debt, d$interest_rate, d$gdp_growth,
+                        d$primary_balance, years = d$years)
+decomp
+#> -- Debt Decomposition --
+#> * Periods: 19 (2005-2023)
+#> * Cumulative change: 24 pp
+#> *   Interest effect: 52.5 pp
+#> *   Growth effect: -58.2 pp
+#> *   Primary balance: 14.4 pp
+#> *   Stock-flow adj.: 15.3 pp
+
+plot(decomp)  # Stacked bar chart of contributions
+```
+
+### How wide is the range of possible outcomes?
+
+Estimate the joint distribution of macro shocks from historical data,
+then simulate 1,000 debt paths. The fan chart shows the 10th to 90th
+percentile bands.
+
+``` r
+d <- dk_sample_data()
+shocks <- dk_estimate_shocks(d$gdp_growth, d$interest_rate, d$primary_balance)
+fan <- dk_fan_chart(debt = 0.90, interest_rate = 0.035, gdp_growth = 0.03,
+                    primary_balance = -0.01, shocks = shocks,
+                    n_sim = 1000, horizon = 10, seed = 42)
+fan
+#> -- Stochastic Debt Fan Chart --
+#> * Simulations: 1000
+#> * Horizon: 10 years
+#> * Initial debt: 90% of GDP
+#> * Baseline terminal debt: 103.2% of GDP
+
+plot(fan)  # Fan chart with percentile bands
+```
+
+### What if things go wrong?
+
+Run six standardised IMF stress-test scenarios: growth shock, interest
+rate shock, exchange rate shock, primary balance shock, a combined
+shock, and contingent liabilities materialising.
+
+``` r
+stress <- dk_stress_test(debt = 0.90, interest_rate = 0.04,
+                         gdp_growth = 0.03, primary_balance = 0.01,
+                         fx_share = 0.20)
+stress
+#> -- IMF Stress Test Scenarios --
+#> * Horizon: 5 years
+#> * Initial debt/GDP: 90%
+#>
+#> Terminal debt/GDP by scenario:
+#>   Baseline                 85.5%
+#>   Growth shock             87.3%
+#>   Interest rate shock      93.9%
+#>   Exchange rate shock      88.2%
+#>   Primary balance shock    87.3%
+#>   Combined shock           89.8%
+#>   Contingent liabilities   94.8%
+
+plot(stress)
+```
+
+### Does the government respond to rising debt?
+
+Estimate Bohn’s (1998) fiscal reaction function. A positive,
+statistically significant coefficient means the government
+systematically raises the primary surplus when debt rises, satisfying a
+sufficient condition for sustainability.
+
+``` r
+d <- dk_sample_data()
+bohn <- dk_bohn_test(d$primary_balance, d$debt, robust_se = TRUE)
+bohn
+#> -- Bohn Fiscal Reaction Function --
+#> * Method: ols (HAC)
+#> * Observations: 20
+#> * rho = 0.15 (SE = 0.06, p = 0.02)
+#> v Sustainable: rho > 0 and significant at 5% level.
+```
+
+### How much fiscal adjustment is needed?
+
+Compute the European Commission’s S1 and S2 sustainability gap
+indicators. S1 measures the adjustment needed to reach 60% debt in 20
+years. S2 measures the adjustment needed to stabilise debt over an
+infinite horizon, accounting for ageing costs.
+
+``` r
+dk_sustainability_gap(
+  debt = 0.90, structural_balance = -0.01,
+  gdp_growth = 0.015, interest_rate = 0.025, ageing_costs = 0.02
+)
+#> -- Sustainability Gap Indicators --
+#> * Current debt/GDP: 90%
+#> * Current structural PB: -1%
+#>
+#> -- S1 Indicator --
+#> * Required PB adjustment: 2.8 pp
+#> * Target debt/GDP: 60% in 20 years
+#>
+#> -- S2 Indicator --
+#> * Required PB adjustment: 1.9 pp
+```
+
+## What data do I need?
+
+Every function in `debtkit` takes the same four inputs, all as decimals
+(0.90 = 90% of GDP):
+
+| Input             | What it is                                                                  |
+|-------------------|-----------------------------------------------------------------------------|
+| `debt`            | Debt-to-GDP ratio (0.90 = 90%)                                              |
+| `interest_rate`   | Interest rate on government debt (0.04 = 4%)                                |
+| `gdp_growth`      | Nominal GDP growth (0.03 = 3%)                                              |
+| `primary_balance` | Revenue minus non-interest spending (0.01 = 1% surplus, negative = deficit) |
+
+These are standard fiscal variables published by every major data
+provider. You can type them in directly, use the built-in sample data,
+or pull them from a data source.
+
+### Option 1: Type values in directly
+
+If you know the numbers (from a budget document, a news article, or a
+textbook exercise), just type them:
+
+``` r
+library(debtkit)
+
+# Italy-like scenario: high debt, low growth, small deficit
+dk_project(debt = 1.40, interest_rate = 0.035, gdp_growth = 0.02,
+           primary_balance = 0.015, horizon = 10)
+```
+
+### Option 2: Use the built-in sample data
+
+The package includes sample datasets so you can try everything
+immediately:
+
+``` r
+d <- dk_sample_data()
+str(d)
+#> List of 5
+#>  $ years          : int [1:20] 2004 2005 2006 ... 2023
+#>  $ debt           : num [1:20] 0.45 0.44 0.42 ... 0.69
+#>  $ interest_rate  : num [1:20] 0.045 0.043 0.042 ... 0.038
+#>  $ gdp_growth     : num [1:20] 0.055 0.050 0.060 ... 0.040
+#>  $ primary_balance: num [1:20] 0.010 0.012 0.015 ... -0.005
+```
+
+### Option 3: Pull data from a source
+
+Here is a complete example using OECD data for any of 38 member
+countries:
+
+``` r
+# 1. Install the data package (one time)
+install.packages("readoecd")
+
+# 2. Download fiscal data for France
+library(readoecd)
+debt <- oecd_series("GGDEBT", "FRA")          # General government debt (% of GDP)
+growth <- oecd_series("NGDP_RPCH", "FRA")      # Real GDP growth (%)
+balance <- oecd_series("GGXONLB_NGDP", "FRA")  # Primary balance (% of GDP)
+
+# 3. Convert from percent to decimal and feed into debtkit
+library(debtkit)
+dk_project(
+  debt = tail(debt$value, 1) / 100,
+  interest_rate = 0.03,                         # Use latest effective rate estimate
+  gdp_growth = tail(growth$value, 1) / 100,
+  primary_balance = tail(balance$value, 1) / 100,
+  horizon = 10
+)
+```
+
+### Where to find fiscal data
+
+| Source     | Coverage       | Series you need                      | How to get into R                                       |
+|------------|----------------|--------------------------------------|---------------------------------------------------------|
+| OECD       | 38 countries   | GGDEBT, NGDP_RPCH, GGXONLB_NGDP      | [readoecd](https://cran.r-project.org/package=readoecd) |
+| IMF WEO    | 190+ countries | GGXWDG_NGDP, NGDP_RPCH, GGXONLB_NGDP | Download CSV from imf.org                               |
+| FRED (US)  | United States  | GFDEGDQ188S, GDPC1, FYFSGDA188S      | [fred](https://cran.r-project.org/package=fred)         |
+| Eurostat   | EU members     | gov_10dd_edpt1, nama_10_gdp          | eurostat package                                        |
+| World Bank | 200+ countries | GC.DOD.TOTL.GD.ZS, NY.GDP.MKTP.KD.ZG | WDI package                                             |
+
+## Functions
+
+| Function                                                                                                   | Description                                                                                      |
+|------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------|
+| [`dk_project()`](https://charlescoverdale.github.io/debtkit/reference/dk_project.md)                       | Project debt-to-GDP paths forward                                                                |
+| [`dk_decompose()`](https://charlescoverdale.github.io/debtkit/reference/dk_decompose.md)                   | Decompose historical debt changes into interest, growth, primary balance, and stock-flow effects |
+| [`dk_rg()`](https://charlescoverdale.github.io/debtkit/reference/dk_rg.md)                                 | Interest rate-growth differential and debt-stabilising primary balance                           |
+| [`dk_bohn_test()`](https://charlescoverdale.github.io/debtkit/reference/dk_bohn_test.md)                   | Bohn fiscal reaction function (OLS, rolling, quadratic; optional HAC standard errors)            |
+| [`dk_estimate_shocks()`](https://charlescoverdale.github.io/debtkit/reference/dk_estimate_shocks.md)       | Estimate joint shock distributions (VAR, bootstrap, normal)                                      |
+| [`dk_fan_chart()`](https://charlescoverdale.github.io/debtkit/reference/dk_fan_chart.md)                   | Stochastic debt fan charts via Monte Carlo simulation                                            |
+| [`dk_stress_test()`](https://charlescoverdale.github.io/debtkit/reference/dk_stress_test.md)               | Six IMF standardised stress tests (fixed or data-driven calibration)                             |
+| [`dk_heat_map()`](https://charlescoverdale.github.io/debtkit/reference/dk_heat_map.md)                     | IMF-style risk heat map with colour-coded ratings                                                |
+| [`dk_gfn()`](https://charlescoverdale.github.io/debtkit/reference/dk_gfn.md)                               | Gross financing needs projection                                                                 |
+| [`dk_sustainability_gap()`](https://charlescoverdale.github.io/debtkit/reference/dk_sustainability_gap.md) | European Commission S1/S2 sustainability gap indicators                                          |
+| [`dk_compare()`](https://charlescoverdale.github.io/debtkit/reference/dk_compare.md)                       | Side-by-side comparison of multiple projection scenarios                                         |
+| [`dk_sample_data()`](https://charlescoverdale.github.io/debtkit/reference/dk_sample_data.md)               | Built-in sample fiscal datasets                                                                  |
+
+All objects returned by
+[`dk_project()`](https://charlescoverdale.github.io/debtkit/reference/dk_project.md),
+[`dk_decompose()`](https://charlescoverdale.github.io/debtkit/reference/dk_decompose.md),
+[`dk_fan_chart()`](https://charlescoverdale.github.io/debtkit/reference/dk_fan_chart.md),
+[`dk_stress_test()`](https://charlescoverdale.github.io/debtkit/reference/dk_stress_test.md),
+[`dk_bohn_test()`](https://charlescoverdale.github.io/debtkit/reference/dk_bohn_test.md),
+and
+[`dk_compare()`](https://charlescoverdale.github.io/debtkit/reference/dk_compare.md)
+have [`print()`](https://rdrr.io/r/base/print.html),
+[`summary()`](https://rdrr.io/r/base/summary.html), and
+[`plot()`](https://rdrr.io/r/graphics/plot.default.html) methods.
+
+## Academic references
+
+- Blanchard, O.J. (1990). “Suggestions for a New Set of Fiscal
+  Indicators.” *OECD Economics Department Working Papers*, No. 79.
+  [doi:10.1787/435618162862](https://doi.org/10.1787/435618162862)
+- Bohn, H. (1998). “The Behavior of U.S. Public Debt and Deficits.”
+  *Quarterly Journal of Economics*, 113(3), 949-963.
+  [doi:10.1162/003355398555793](https://doi.org/10.1162/003355398555793)
+- Ghosh, A.R., Kim, J.I., Mendoza, E.G., Ostry, J.D. and Qureshi, M.S.
+  (2013). “Fiscal Fatigue, Fiscal Space and Debt Sustainability in
+  Advanced Economies.” *The Economic Journal*, 123(566), F4-F30.
+- IMF (2013). *Staff Guidance Note for Public Debt Sustainability
+  Analysis in Market-Access Countries*. IMF Policy Paper.
+- IMF (2022). *Staff Guidance Note on the Sovereign Risk and Debt
+  Sustainability Framework for Market Access Countries*. IMF Policy
+  Paper.
+- European Commission (2024). *Fiscal Sustainability Report*.
+  Institutional Paper 291.
+
+## Related packages
+
+| Package                                                            | What it covers                                                            |
+|--------------------------------------------------------------------|---------------------------------------------------------------------------|
+| [`yieldcurves`](https://github.com/charlescoverdale/yieldcurves)   | Yield curve fitting (Nelson-Siegel, Svensson) and term structure analysis |
+| [`inflationkit`](https://github.com/charlescoverdale/inflationkit) | Inflation decomposition, core measures, and Phillips curve estimation     |
+| [`obr`](https://github.com/charlescoverdale/obr)                   | OBR fiscal forecasts and the UK Public Finances Databank                  |
+| [`fred`](https://github.com/charlescoverdale/fred)                 | Federal Reserve Economic Data (US Treasury yields, debt levels)           |
+| [`readoecd`](https://github.com/charlescoverdale/readoecd)         | OECD government debt and fiscal balance data                              |
+
+## Issues
+
+Found a bug or have a feature request? Please [open an
+issue](https://github.com/charlescoverdale/debtkit/issues) on GitHub.
+
+## Keywords
+
+r, r-package, debt-sustainability, fiscal-policy, public-debt,
+macroeconomics, imf, sovereign-risk, fan-chart, stress-test
