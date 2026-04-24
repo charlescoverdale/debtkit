@@ -208,9 +208,9 @@ in the advanced-economy policy debate. Figure
 series for three advanced economies, 1990 to 2023: Japan, the
 United States, and the United Kingdom. Japan sits in a different
 regime to the Anglo-Saxon pair, tracking above 200 per cent of GDP
-since the mid-2010s without a sovereign funding crisis; the United
-States and the United Kingdom each moved from roughly 40 per cent
-in the early 1990s to roughly 100 per cent by the early 2020s. The
+since the early 2010s without a sovereign funding crisis; the United
+States and the United Kingdom each moved from roughly 35 to 65 per
+cent in the early 1990s to above 100 per cent by the early 2020s. The
 2008 financial crisis and the 2020 pandemic are each visible as
 level shifts.
 
@@ -317,16 +317,16 @@ cross-country summary used in the replication.
 ```{r debt-panel}
 debt_panel <- data.frame(
   Country = c("United States", "United Kingdom"),
-  `Debt/GDP (first)` = c("40.9% (1990)", "30.2% (1990)"),
-  `Debt/GDP (latest)` = c("118.0% (2024)", "131.1% (2024)"),
-  `Peak (year)` = c("126.4% (2020)", "194.7% (2020)"),
-  Change = c("+77.0 pp", "+100.9 pp"),
+  `Debt/GDP (first)` = c("63.2% (1990)", "35.5% (1990)"),
+  `Debt/GDP (latest)` = c("122.3% (2024)", "103.1% (2024)"),
+  `Peak (year)` = c("133.9% (2020)", "104.1% (2020)"),
+  Change = c("+59.1 pp", "+67.6 pp"),
   check.names = FALSE,
   stringsAsFactors = FALSE
 )
 knitr::kable(
   debt_panel,
-  caption = "Central government debt, two advanced economies: first and latest observations plus peak. Data: World Bank \\texttt{GC.DOD.TOTL.GD.ZS}. The United Kingdom and the United States rose from roughly 30 to 40 per cent in 1990 to above 100 per cent by 2024.",
+  caption = "General government gross debt, two advanced economies: first and latest observations plus peak. Data: IMF Fiscal Monitor (April 2024), general government gross debt as a percentage of GDP. The United Kingdom and the United States each rose from the 35 to 65 per cent range in 1990 to above 100 per cent by 2020.",
   booktabs = TRUE
 )
 ```
@@ -336,7 +336,7 @@ knitr::kable(
 The most-watched fiscal question in US macroeconomic policy since
 2020 has been whether the federal debt ratio, which jumped from 79
 per cent of GDP at end-2019 to 100 per cent by end-2021, is on a
-sustainable trajectory [@blanchard2022fiscal;
+sustainable trajectory [@blanchard2023fiscal;
 @furman2023weworry]. The \CRANpkg{debtkit} pipeline produces a
 compact answer in three steps.
 
@@ -362,7 +362,7 @@ the interest-rate shock dominates for a country with the US debt
 structure: a two percentage-point increase in the effective rate
 produces the largest upward divergence from the baseline.
 Combining the three diagnostics, the package reproduces the main
-qualitative conclusion of @blanchard2022fiscal: at current
+qualitative conclusion of @blanchard2023fiscal: at current
 interest-growth differentials the US debt ratio is manageable, but
 the margin is narrow and sensitive to rate assumptions.
 
