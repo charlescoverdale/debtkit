@@ -275,13 +275,15 @@ All objects returned by `dk_project()`, `dk_decompose()`, `dk_fan_chart()`, `dk_
 
 ## Related packages
 
-| Package | What it covers |
+| Package | Description |
 |---|---|
-| [`yieldcurves`](https://github.com/charlescoverdale/yieldcurves) | Yield curve fitting (Nelson-Siegel, Svensson) and term structure analysis |
-| [`inflationkit`](https://github.com/charlescoverdale/inflationkit) | Inflation decomposition, core measures, and Phillips curve estimation |
 | [`obr`](https://github.com/charlescoverdale/obr) | OBR fiscal forecasts and the UK Public Finances Databank |
 | [`fred`](https://github.com/charlescoverdale/fred) | Federal Reserve Economic Data (US Treasury yields, debt levels) |
-| [`readoecd`](https://github.com/charlescoverdale/readoecd) | OECD government debt and fiscal balance data |
+| [`ons`](https://github.com/charlescoverdale/ons) | UK Office for National Statistics data (GDP, public sector net debt) |
+| [`yieldcurves`](https://github.com/charlescoverdale/yieldcurves) | Yield curve fitting (Nelson-Siegel, Svensson) and term structure analysis |
+| [`inflationkit`](https://github.com/charlescoverdale/inflationkit) | Inflation decomposition, core measures, and Phillips curve estimation |
+| [`mpshock`](https://github.com/charlescoverdale/mpshock) | Monetary policy shock series |
+| [`greenbook`](https://github.com/charlescoverdale/greenbook) | HM Treasury Green Book CBA primitives |
 
 
 ## Issues
