@@ -7,6 +7,7 @@ country assessments.**
 ## Installation
 
 ``` r
+
 install.packages("debtkit")
 
 # Or install the development version from GitHub
@@ -15,6 +16,7 @@ devtools::install_github("charlescoverdale/debtkit")
 ```
 
 ``` r
+
 library(debtkit)
 
 # Project debt forward 10 years
@@ -64,6 +66,7 @@ the terminal debt ratio and the primary balance that would stabilise
 debt at its current level.
 
 ``` r
+
 library(debtkit)
 
 proj <- dk_project(debt = 0.90, interest_rate = 0.04,
@@ -85,6 +88,7 @@ pushing debt up, GDP growth pulling it down, the primary balance, and a
 residual (stock-flow adjustment).
 
 ``` r
+
 d <- dk_sample_data()
 decomp <- dk_decompose(d$debt, d$interest_rate, d$gdp_growth,
                         d$primary_balance, years = d$years)
@@ -107,6 +111,7 @@ then simulate 1,000 debt paths. The fan chart shows the 10th to 90th
 percentile bands.
 
 ``` r
+
 d <- dk_sample_data()
 shocks <- dk_estimate_shocks(d$gdp_growth, d$interest_rate, d$primary_balance)
 fan <- dk_fan_chart(debt = 0.90, interest_rate = 0.035, gdp_growth = 0.03,
@@ -129,6 +134,7 @@ rate shock, exchange rate shock, primary balance shock, a combined
 shock, and contingent liabilities materialising.
 
 ``` r
+
 stress <- dk_stress_test(debt = 0.90, interest_rate = 0.04,
                          gdp_growth = 0.03, primary_balance = 0.01,
                          fx_share = 0.20)
@@ -157,6 +163,7 @@ systematically raises the primary surplus when debt rises, satisfying a
 sufficient condition for sustainability.
 
 ``` r
+
 d <- dk_sample_data()
 bohn <- dk_bohn_test(d$primary_balance, d$debt, robust_se = TRUE)
 bohn
@@ -175,6 +182,7 @@ years. S2 measures the adjustment needed to stabilise debt over an
 infinite horizon, accounting for ageing costs.
 
 ``` r
+
 dk_sustainability_gap(
   debt = 0.90, structural_balance = -0.01,
   gdp_growth = 0.015, interest_rate = 0.025, ageing_costs = 0.02
@@ -196,11 +204,11 @@ dk_sustainability_gap(
 Every function in `debtkit` takes the same four inputs, all as decimals
 (0.90 = 90% of GDP):
 
-| Input             | What it is                                                                  |
-|-------------------|-----------------------------------------------------------------------------|
-| `debt`            | Debt-to-GDP ratio (0.90 = 90%)                                              |
-| `interest_rate`   | Interest rate on government debt (0.04 = 4%)                                |
-| `gdp_growth`      | Nominal GDP growth (0.03 = 3%)                                              |
+| Input | What it is |
+|----|----|
+| `debt` | Debt-to-GDP ratio (0.90 = 90%) |
+| `interest_rate` | Interest rate on government debt (0.04 = 4%) |
+| `gdp_growth` | Nominal GDP growth (0.03 = 3%) |
 | `primary_balance` | Revenue minus non-interest spending (0.01 = 1% surplus, negative = deficit) |
 
 These are standard fiscal variables published by every major data
@@ -213,6 +221,7 @@ If you know the numbers (from a budget document, a news article, or a
 textbook exercise), just type them:
 
 ``` r
+
 library(debtkit)
 
 # Italy-like scenario: high debt, low growth, small deficit
@@ -226,6 +235,7 @@ The package includes sample datasets so you can try everything
 immediately:
 
 ``` r
+
 d <- dk_sample_data()
 str(d)
 #> List of 5
@@ -242,6 +252,7 @@ Here is a complete example using OECD data for any of 38 member
 countries:
 
 ``` r
+
 # 1. Install the data package (one time)
 install.packages("readoecd")
 
@@ -264,30 +275,30 @@ dk_project(
 
 ### Where to find fiscal data
 
-| Source     | Coverage       | Series you need                      | How to get into R                                       |
-|------------|----------------|--------------------------------------|---------------------------------------------------------|
-| OECD       | 38 countries   | GGDEBT, NGDP_RPCH, GGXONLB_NGDP      | [readoecd](https://cran.r-project.org/package=readoecd) |
-| IMF WEO    | 190+ countries | GGXWDG_NGDP, NGDP_RPCH, GGXONLB_NGDP | Download CSV from imf.org                               |
-| FRED (US)  | United States  | GFDEGDQ188S, GDPC1, FYFSGDA188S      | [fred](https://cran.r-project.org/package=fred)         |
-| Eurostat   | EU members     | gov_10dd_edpt1, nama_10_gdp          | eurostat package                                        |
-| World Bank | 200+ countries | GC.DOD.TOTL.GD.ZS, NY.GDP.MKTP.KD.ZG | WDI package                                             |
+| Source | Coverage | Series you need | How to get into R |
+|----|----|----|----|
+| OECD | 38 countries | GGDEBT, NGDP_RPCH, GGXONLB_NGDP | [readoecd](https://cran.r-project.org/package=readoecd) |
+| IMF WEO | 190+ countries | GGXWDG_NGDP, NGDP_RPCH, GGXONLB_NGDP | Download CSV from imf.org |
+| FRED (US) | United States | GFDEGDQ188S, GDPC1, FYFSGDA188S | [fred](https://cran.r-project.org/package=fred) |
+| Eurostat | EU members | gov_10dd_edpt1, nama_10_gdp | eurostat package |
+| World Bank | 200+ countries | GC.DOD.TOTL.GD.ZS, NY.GDP.MKTP.KD.ZG | WDI package |
 
 ## Functions
 
-| Function                                                                                                   | Description                                                                                      |
-|------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------|
-| [`dk_project()`](https://charlescoverdale.github.io/debtkit/reference/dk_project.md)                       | Project debt-to-GDP paths forward                                                                |
-| [`dk_decompose()`](https://charlescoverdale.github.io/debtkit/reference/dk_decompose.md)                   | Decompose historical debt changes into interest, growth, primary balance, and stock-flow effects |
-| [`dk_rg()`](https://charlescoverdale.github.io/debtkit/reference/dk_rg.md)                                 | Interest rate-growth differential and debt-stabilising primary balance                           |
-| [`dk_bohn_test()`](https://charlescoverdale.github.io/debtkit/reference/dk_bohn_test.md)                   | Bohn fiscal reaction function (OLS, rolling, quadratic; optional HAC standard errors)            |
-| [`dk_estimate_shocks()`](https://charlescoverdale.github.io/debtkit/reference/dk_estimate_shocks.md)       | Estimate joint shock distributions (VAR, bootstrap, normal)                                      |
-| [`dk_fan_chart()`](https://charlescoverdale.github.io/debtkit/reference/dk_fan_chart.md)                   | Stochastic debt fan charts via Monte Carlo simulation                                            |
-| [`dk_stress_test()`](https://charlescoverdale.github.io/debtkit/reference/dk_stress_test.md)               | Six IMF standardised stress tests (fixed or data-driven calibration)                             |
-| [`dk_heat_map()`](https://charlescoverdale.github.io/debtkit/reference/dk_heat_map.md)                     | IMF-style risk heat map with colour-coded ratings                                                |
-| [`dk_gfn()`](https://charlescoverdale.github.io/debtkit/reference/dk_gfn.md)                               | Gross financing needs projection                                                                 |
-| [`dk_sustainability_gap()`](https://charlescoverdale.github.io/debtkit/reference/dk_sustainability_gap.md) | European Commission S1/S2 sustainability gap indicators                                          |
-| [`dk_compare()`](https://charlescoverdale.github.io/debtkit/reference/dk_compare.md)                       | Side-by-side comparison of multiple projection scenarios                                         |
-| [`dk_sample_data()`](https://charlescoverdale.github.io/debtkit/reference/dk_sample_data.md)               | Built-in sample fiscal datasets                                                                  |
+| Function | Description |
+|----|----|
+| [`dk_project()`](https://charlescoverdale.github.io/debtkit/reference/dk_project.md) | Project debt-to-GDP paths forward |
+| [`dk_decompose()`](https://charlescoverdale.github.io/debtkit/reference/dk_decompose.md) | Decompose historical debt changes into interest, growth, primary balance, and stock-flow effects |
+| [`dk_rg()`](https://charlescoverdale.github.io/debtkit/reference/dk_rg.md) | Interest rate-growth differential and debt-stabilising primary balance |
+| [`dk_bohn_test()`](https://charlescoverdale.github.io/debtkit/reference/dk_bohn_test.md) | Bohn fiscal reaction function (OLS, rolling, quadratic; optional HAC standard errors) |
+| [`dk_estimate_shocks()`](https://charlescoverdale.github.io/debtkit/reference/dk_estimate_shocks.md) | Estimate joint shock distributions (VAR, bootstrap, normal) |
+| [`dk_fan_chart()`](https://charlescoverdale.github.io/debtkit/reference/dk_fan_chart.md) | Stochastic debt fan charts via Monte Carlo simulation |
+| [`dk_stress_test()`](https://charlescoverdale.github.io/debtkit/reference/dk_stress_test.md) | Six IMF standardised stress tests (fixed or data-driven calibration) |
+| [`dk_heat_map()`](https://charlescoverdale.github.io/debtkit/reference/dk_heat_map.md) | IMF-style risk heat map with colour-coded ratings |
+| [`dk_gfn()`](https://charlescoverdale.github.io/debtkit/reference/dk_gfn.md) | Gross financing needs projection |
+| [`dk_sustainability_gap()`](https://charlescoverdale.github.io/debtkit/reference/dk_sustainability_gap.md) | European Commission S1/S2 sustainability gap indicators |
+| [`dk_compare()`](https://charlescoverdale.github.io/debtkit/reference/dk_compare.md) | Side-by-side comparison of multiple projection scenarios |
+| [`dk_sample_data()`](https://charlescoverdale.github.io/debtkit/reference/dk_sample_data.md) | Built-in sample fiscal datasets |
 
 All objects returned by
 [`dk_project()`](https://charlescoverdale.github.io/debtkit/reference/dk_project.md),
@@ -322,13 +333,15 @@ have [`print()`](https://rdrr.io/r/base/print.html),
 
 ## Related packages
 
-| Package                                                            | What it covers                                                            |
-|--------------------------------------------------------------------|---------------------------------------------------------------------------|
-| [`yieldcurves`](https://github.com/charlescoverdale/yieldcurves)   | Yield curve fitting (Nelson-Siegel, Svensson) and term structure analysis |
-| [`inflationkit`](https://github.com/charlescoverdale/inflationkit) | Inflation decomposition, core measures, and Phillips curve estimation     |
-| [`obr`](https://github.com/charlescoverdale/obr)                   | OBR fiscal forecasts and the UK Public Finances Databank                  |
-| [`fred`](https://github.com/charlescoverdale/fred)                 | Federal Reserve Economic Data (US Treasury yields, debt levels)           |
-| [`readoecd`](https://github.com/charlescoverdale/readoecd)         | OECD government debt and fiscal balance data                              |
+| Package | Description |
+|----|----|
+| [`obr`](https://github.com/charlescoverdale/obr) | OBR fiscal forecasts and the UK Public Finances Databank |
+| [`fred`](https://github.com/charlescoverdale/fred) | Federal Reserve Economic Data (US Treasury yields, debt levels) |
+| [`ons`](https://github.com/charlescoverdale/ons) | UK Office for National Statistics data (GDP, public sector net debt) |
+| [`yieldcurves`](https://github.com/charlescoverdale/yieldcurves) | Yield curve fitting (Nelson-Siegel, Svensson) and term structure analysis |
+| [`inflationkit`](https://github.com/charlescoverdale/inflationkit) | Inflation decomposition, core measures, and Phillips curve estimation |
+| [`mpshock`](https://github.com/charlescoverdale/mpshock) | Monetary policy shock series |
+| [`greenbook`](https://github.com/charlescoverdale/greenbook) | HM Treasury Green Book CBA primitives |
 
 ## Issues
 

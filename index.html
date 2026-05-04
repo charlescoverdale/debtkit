@@ -208,24 +208,24 @@
 <col width="38%">
 <col width="61%">
 </colgroup>
-<thead><tr class="header">
+<thead><tr>
 <th>Input</th>
 <th>What it is</th>
 </tr></thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td><code>debt</code></td>
 <td>Debt-to-GDP ratio (0.90 = 90%)</td>
 </tr>
-<tr class="even">
+<tr>
 <td><code>interest_rate</code></td>
 <td>Interest rate on government debt (0.04 = 4%)</td>
 </tr>
-<tr class="odd">
+<tr>
 <td><code>gdp_growth</code></td>
 <td>Nominal GDP growth (0.03 = 3%)</td>
 </tr>
-<tr class="even">
+<tr>
 <td><code>primary_balance</code></td>
 <td>Revenue minus non-interest spending (0.01 = 1% surplus, negative = deficit)</td>
 </tr>
@@ -291,38 +291,38 @@
 <col width="30%">
 <col width="35%">
 </colgroup>
-<thead><tr class="header">
+<thead><tr>
 <th>Source</th>
 <th>Coverage</th>
 <th>Series you need</th>
 <th>How to get into R</th>
 </tr></thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td>OECD</td>
 <td>38 countries</td>
 <td>GGDEBT, NGDP_RPCH, GGXONLB_NGDP</td>
 <td><a href="https://cran.r-project.org/package=readoecd" class="external-link">readoecd</a></td>
 </tr>
-<tr class="even">
+<tr>
 <td>IMF WEO</td>
 <td>190+ countries</td>
 <td>GGXWDG_NGDP, NGDP_RPCH, GGXONLB_NGDP</td>
 <td>Download CSV from imf.org</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>FRED (US)</td>
 <td>United States</td>
 <td>GFDEGDQ188S, GDPC1, FYFSGDA188S</td>
 <td><a href="https://cran.r-project.org/package=fred" class="external-link">fred</a></td>
 </tr>
-<tr class="even">
+<tr>
 <td>Eurostat</td>
 <td>EU members</td>
 <td>gov_10dd_edpt1, nama_10_gdp</td>
 <td>eurostat package</td>
 </tr>
-<tr class="odd">
+<tr>
 <td>World Bank</td>
 <td>200+ countries</td>
 <td>GC.DOD.TOTL.GD.ZS, NY.GDP.MKTP.KD.ZG</td>
@@ -340,56 +340,56 @@
 <col width="43%">
 <col width="56%">
 </colgroup>
-<thead><tr class="header">
+<thead><tr>
 <th>Function</th>
 <th>Description</th>
 </tr></thead>
 <tbody>
-<tr class="odd">
+<tr>
 <td><code><a href="reference/dk_project.html">dk_project()</a></code></td>
 <td>Project debt-to-GDP paths forward</td>
 </tr>
-<tr class="even">
+<tr>
 <td><code><a href="reference/dk_decompose.html">dk_decompose()</a></code></td>
 <td>Decompose historical debt changes into interest, growth, primary balance, and stock-flow effects</td>
 </tr>
-<tr class="odd">
+<tr>
 <td><code><a href="reference/dk_rg.html">dk_rg()</a></code></td>
 <td>Interest rate-growth differential and debt-stabilising primary balance</td>
 </tr>
-<tr class="even">
+<tr>
 <td><code><a href="reference/dk_bohn_test.html">dk_bohn_test()</a></code></td>
 <td>Bohn fiscal reaction function (OLS, rolling, quadratic; optional HAC standard errors)</td>
 </tr>
-<tr class="odd">
+<tr>
 <td><code><a href="reference/dk_estimate_shocks.html">dk_estimate_shocks()</a></code></td>
 <td>Estimate joint shock distributions (VAR, bootstrap, normal)</td>
 </tr>
-<tr class="even">
+<tr>
 <td><code><a href="reference/dk_fan_chart.html">dk_fan_chart()</a></code></td>
 <td>Stochastic debt fan charts via Monte Carlo simulation</td>
 </tr>
-<tr class="odd">
+<tr>
 <td><code><a href="reference/dk_stress_test.html">dk_stress_test()</a></code></td>
 <td>Six IMF standardised stress tests (fixed or data-driven calibration)</td>
 </tr>
-<tr class="even">
+<tr>
 <td><code><a href="reference/dk_heat_map.html">dk_heat_map()</a></code></td>
 <td>IMF-style risk heat map with colour-coded ratings</td>
 </tr>
-<tr class="odd">
+<tr>
 <td><code><a href="reference/dk_gfn.html">dk_gfn()</a></code></td>
 <td>Gross financing needs projection</td>
 </tr>
-<tr class="even">
+<tr>
 <td><code><a href="reference/dk_sustainability_gap.html">dk_sustainability_gap()</a></code></td>
 <td>European Commission S1/S2 sustainability gap indicators</td>
 </tr>
-<tr class="odd">
+<tr>
 <td><code><a href="reference/dk_compare.html">dk_compare()</a></code></td>
 <td>Side-by-side comparison of multiple projection scenarios</td>
 </tr>
-<tr class="even">
+<tr>
 <td><code><a href="reference/dk_sample_data.html">dk_sample_data()</a></code></td>
 <td>Built-in sample fiscal datasets</td>
 </tr>
@@ -419,30 +419,38 @@
 <col width="50%">
 <col width="50%">
 </colgroup>
-<thead><tr class="header">
+<thead><tr>
 <th>Package</th>
-<th>What it covers</th>
+<th>Description</th>
 </tr></thead>
 <tbody>
-<tr class="odd">
-<td><a href="https://github.com/charlescoverdale/yieldcurves" class="external-link"><code>yieldcurves</code></a></td>
-<td>Yield curve fitting (Nelson-Siegel, Svensson) and term structure analysis</td>
-</tr>
-<tr class="even">
-<td><a href="https://github.com/charlescoverdale/inflationkit" class="external-link"><code>inflationkit</code></a></td>
-<td>Inflation decomposition, core measures, and Phillips curve estimation</td>
-</tr>
-<tr class="odd">
+<tr>
 <td><a href="https://github.com/charlescoverdale/obr" class="external-link"><code>obr</code></a></td>
 <td>OBR fiscal forecasts and the UK Public Finances Databank</td>
 </tr>
-<tr class="even">
+<tr>
 <td><a href="https://github.com/charlescoverdale/fred" class="external-link"><code>fred</code></a></td>
 <td>Federal Reserve Economic Data (US Treasury yields, debt levels)</td>
 </tr>
-<tr class="odd">
-<td><a href="https://github.com/charlescoverdale/readoecd" class="external-link"><code>readoecd</code></a></td>
-<td>OECD government debt and fiscal balance data</td>
+<tr>
+<td><a href="https://github.com/charlescoverdale/ons" class="external-link"><code>ons</code></a></td>
+<td>UK Office for National Statistics data (GDP, public sector net debt)</td>
+</tr>
+<tr>
+<td><a href="https://github.com/charlescoverdale/yieldcurves" class="external-link"><code>yieldcurves</code></a></td>
+<td>Yield curve fitting (Nelson-Siegel, Svensson) and term structure analysis</td>
+</tr>
+<tr>
+<td><a href="https://github.com/charlescoverdale/inflationkit" class="external-link"><code>inflationkit</code></a></td>
+<td>Inflation decomposition, core measures, and Phillips curve estimation</td>
+</tr>
+<tr>
+<td><a href="https://github.com/charlescoverdale/mpshock" class="external-link"><code>mpshock</code></a></td>
+<td>Monetary policy shock series</td>
+</tr>
+<tr>
+<td><a href="https://github.com/charlescoverdale/greenbook" class="external-link"><code>greenbook</code></a></td>
+<td>HM Treasury Green Book CBA primitives</td>
 </tr>
 </tbody>
 </table>
