@@ -8,6 +8,8 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 <!-- badges: end -->
 
+A technical working paper for this package can be found [here](https://charlescoverdale.github.io/files/coverdale_debtkit_2026.pdf).
+
 **Analyse whether a government's debt is on a sustainable path, using the same frameworks that the IMF and European Commission use in their country assessments.**
 
 ## Installation
